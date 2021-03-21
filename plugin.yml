@@ -1,0 +1,6 @@
+name: NovaSurvivalGames
+main: net.novauniverse.games.survivalgames.NovaSurvivalGames
+description: Novauniverse SurvivalGames
+version: 1.0
+depend: [NovaCore]
+softdepend: [NovaGamesTarget]
