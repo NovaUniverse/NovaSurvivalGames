@@ -95,7 +95,7 @@ public class SurvivalGames extends MapGame implements Listener {
 
 	@Override
 	public boolean autoEndGame() {
-		return false;
+		return true;
 	}
 
 	@Override
