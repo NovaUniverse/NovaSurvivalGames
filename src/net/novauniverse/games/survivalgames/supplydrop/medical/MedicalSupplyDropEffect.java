@@ -16,7 +16,7 @@ import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import net.zeeraa.novacore.spigot.NovaCore;
-import net.zeeraa.novacore.spigot.abstraction.ColoredBlockType;
+import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
 
 public class MedicalSupplyDropEffect implements Runnable {
 	private Location location;
