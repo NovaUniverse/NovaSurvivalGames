@@ -11,12 +11,15 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import net.novauniverse.games.survivalgames.debug.DebugCommands;
 import net.novauniverse.games.survivalgames.game.SurvivalGames;
 import net.novauniverse.games.survivalgames.map.mapmodules.supplydrop.medical.MedicalSupplyDropMapModule;
 import net.novauniverse.games.survivalgames.supplydrop.medical.MedicalSupplyDropManager;
 import net.zeeraa.novacore.commons.log.Log;
+import net.zeeraa.novacore.commons.utils.JSONFileUtils;
 import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.abstraction.events.VersionIndependantPlayerAchievementAwardedEvent;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
@@ -70,8 +73,30 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		File worldFolder = new File(this.getDataFolder().getPath() + File.separator + "Worlds");
 		File lootTableFolder = new File(this.getDataFolder().getPath() + File.separator + "LootTables");
 
+		File mapOverrides = new File(this.getDataFolder().getPath() + File.separator + "map_overrides.json");
+		if (mapOverrides.exists()) {
+			Log.info("Trying to read map overrides file");
+			try {
+				JSONObject mapFiles = JSONFileUtils.readJSONObjectFromFile(mapOverrides);
+
+				boolean relative = mapFiles.getBoolean("relative");
+
+				mapFolder = new File((relative ? this.getDataFolder().getPath() + File.separator : "") + mapFiles.getString("maps_folder"));
+				worldFolder = new File((relative ? this.getDataFolder().getPath() + File.separator : "") + mapFiles.getString("worlds_folder"));
+				lootTableFolder = new File((relative ? this.getDataFolder().getPath() + File.separator : "") + mapFiles.getString("loot_tables_folder"));
+
+				Log.info("New paths:");
+				Log.info("Map folder: " + mapFolder.getAbsolutePath());
+				Log.info("World folder: " + worldFolder.getAbsolutePath());
+				Log.info("Loot table folder:" + lootTableFolder.getAbsolutePath());
+			} catch (JSONException | IOException e) {
+				e.printStackTrace();
+				Log.error("Failed to read map overrides from file " + mapOverrides.getAbsolutePath());
+			}
+		}
+
 		GameManager.getInstance().setUseCombatTagging(combatTagging);
-		
+
 		try {
 			FileUtils.forceMkdir(getDataFolder());
 			FileUtils.forceMkdir(mapFolder);
