@@ -199,7 +199,7 @@ public class SurvivalGames extends MapGame implements Listener {
 	public void onEnd(GameEndReason reason) {
 		ended = true;
 
-		for (Location location : getActiveMap().getStarterLocations()) {
+		getActiveMap().getStarterLocations().forEach(location -> {
 			Firework fw = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
 			FireworkMeta fwm = fw.getFireworkMeta();
 
@@ -207,16 +207,16 @@ public class SurvivalGames extends MapGame implements Listener {
 			fwm.addEffect(RandomFireworkEffect.randomFireworkEffect());
 
 			fw.setFireworkMeta(fwm);
-		}
+		});
 
-		for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-			p.setHealth(p.getMaxHealth());
-			p.setFoodLevel(20);
-			PlayerUtils.clearPlayerInventory(p);
-			PlayerUtils.resetPlayerXP(p);
-			p.setGameMode(GameMode.SPECTATOR);
-			VersionIndependantUtils.get().playSound(p, p.getLocation(), VersionIndependantSound.WITHER_DEATH, 1F, 1F);
-		}
+		Bukkit.getServer().getOnlinePlayers().forEach(player -> {
+			VersionIndependantUtils.get().resetEntityMaxHealth(player);
+			player.setFoodLevel(20);
+			PlayerUtils.clearPlayerInventory(player);
+			PlayerUtils.resetPlayerXP(player);
+			player.setGameMode(GameMode.SPECTATOR);
+			VersionIndependantUtils.get().playSound(player, player.getLocation(), VersionIndependantSound.WITHER_DEATH, 1F, 1F);
+		});
 	}
 
 	@Override
