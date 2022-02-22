@@ -28,6 +28,10 @@ public class MedicalSupplyDropEffect implements Runnable {
 
 	private HashMap<Location, Material> removedBlocks;
 
+	public Location getFireworkLocation() {
+		return new Location(location.getWorld(), location.getX(), (double) y, location.getZ());
+	}
+
 	public MedicalSupplyDropEffect(Location location, String lootTable) {
 		location.setX(location.getBlockX() + 0.5);
 		location.setY(location.getBlockY());

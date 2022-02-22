@@ -1,7 +1,9 @@
 package net.novauniverse.games.survivalgames.supplydrop.medical;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -15,15 +17,23 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.zeeraa.novacore.commons.log.Log;
+import net.zeeraa.novacore.commons.tasks.Task;
 import net.zeeraa.novacore.spigot.NovaCore;
+import net.zeeraa.novacore.spigot.abstraction.VersionIndependantUtils;
+import net.zeeraa.novacore.spigot.abstraction.enums.NovaCoreGameVersion;
 import net.zeeraa.novacore.spigot.module.NovaModule;
+import net.zeeraa.novacore.spigot.module.modules.lootdrop.particles.LootdropParticleEffect;
+import net.zeeraa.novacore.spigot.tasks.SimpleTask;
 import net.zeeraa.novacore.spigot.utils.LocationUtils;
+import xyz.xenondevs.particle.ParticleEffect;
 
 public class MedicalSupplyDropManager extends NovaModule implements Listener {
 	private static MedicalSupplyDropManager instance;
@@ -31,9 +41,9 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 	private List<MedicalSupplyDrop> chests;
 	private List<MedicalSupplyDropEffect> dropEffects;
 
-	// private Map<UUID, LootdropParticleEffect> particleEffects;
+	private Map<UUID, LootdropParticleEffect> particleEffects;
 
-	// private Task particleTask;
+	private Task particleTask;
 
 	private int taskId;
 
@@ -51,15 +61,15 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 		MedicalSupplyDropManager.instance = this;
 		chests = new ArrayList<MedicalSupplyDrop>();
 		dropEffects = new ArrayList<MedicalSupplyDropEffect>();
-		// particleEffects = new HashMap<UUID, LootdropParticleEffect>();
+		particleEffects = new HashMap<UUID, LootdropParticleEffect>();
 		taskId = -1;
 
-		/*
-		 * this.particleTask = new SimpleTask(NovaCore.getInstance(), new Runnable() {
-		 * 
-		 * @Override public void run() { for (UUID uuid : particleEffects.keySet()) {
-		 * particleEffects.get(uuid).update(); } } }, 2L);
-		 */
+		this.particleTask = new SimpleTask(NovaCore.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				particleEffects.values().forEach(e -> e.update());
+			}
+		}, 2L);
 	}
 
 	@Override
@@ -75,12 +85,12 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 			}
 		}, 20L, 20L);
 
-		// particleTask.start();
+		particleTask.start();
 	}
 
 	@Override
 	public void onDisable() {
-		// Task.tryStopTask(particleTask);
+		Task.tryStopTask(particleTask);
 		this.destroy();
 	}
 
@@ -91,7 +101,7 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 
 		dropEffects.forEach(effect -> effect.undoBlocks());
 
-		// particleEffects.clear();
+		particleEffects.clear();
 
 		for (int i = chests.size(); i > 0; i--) {
 			removeChest(chests.get(i - 1));
@@ -105,15 +115,15 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 			}
 		}
 
-		/*
-		 * List<UUID> removeParticles = new ArrayList<UUID>();
-		 * 
-		 * for (UUID uuid : particleEffects.keySet()) { if
-		 * (particleEffects.get(uuid).getLocation().getWorld().equals(world)) {
-		 * removeParticles.add(uuid); } }
-		 * 
-		 * for (UUID uuid : removeParticles) { particleEffects.remove(uuid); }
-		 */
+		List<UUID> removeParticles = new ArrayList<UUID>();
+
+		particleEffects.keySet().forEach(uuid -> {
+			if (particleEffects.get(uuid).getLocation().getWorld().equals(world)) {
+				removeParticles.add(uuid);
+			}
+		});
+
+		removeParticles.forEach(uuid -> particleEffects.remove(uuid));
 
 		for (int i = chests.size(); i > 0; i--) {
 			if (chests.get(i).getWorld().equals(world)) {
@@ -147,7 +157,7 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 			}
 		}
 
-		if (this.isSkull(location.getBlock().getType())) {
+		if (this.isPotentialyADrop(location.getBlock().getType())) {
 			return false;
 		}
 
@@ -162,12 +172,9 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 		MedicalSupplyDrop drop = new MedicalSupplyDrop(location, lootTable);
 		chests.add(drop);
 
-		// Location particleLocation = new Location(location.getWorld(),
-		// LocationUtils.blockCenter(location.getBlockX()), location.getY() + 0.8,
-		// LocationUtils.blockCenter(location.getBlockZ()));
+		Location particleLocation = new Location(location.getWorld(), LocationUtils.blockCenter(location.getBlockX()), location.getY() + 0.8, LocationUtils.blockCenter(location.getBlockZ()));
 
-		// particleEffects.put(drop.getUuid(), new
-		// LootdropParticleEffect(particleLocation));
+		particleEffects.put(drop.getUuid(), new LootdropParticleEffect(particleLocation, ParticleEffect.HEART, 0, 0, 0, false));
 	}
 
 	public MedicalSupplyDrop getChestAtLocation(Location location) {
@@ -189,10 +196,10 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 	public void removeChest(MedicalSupplyDrop chest) {
 		chests.remove(chest);
 		chest.remove();
-		/*
-		 * if (particleEffects.containsKey(chest.getUuid())) {
-		 * particleEffects.remove(chest.getUuid()); }
-		 */
+
+		if (particleEffects.containsKey(chest.getUuid())) {
+			particleEffects.remove(chest.getUuid());
+		}
 	}
 
 	public MedicalSupplyDrop getChestByUUID(UUID uuid) {
@@ -232,8 +239,25 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 		return false;
 	}
 
-	private boolean isSkull(Material material) {
+	private boolean isPotentialyADrop(Material material) {
 		return material.name().equals("SKULL") || material.name().equals("PLAYER_HEAD");
+	}
+
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
+	public void onEntityDamage(EntityDamageEvent e) {
+		if (e.getCause() == DamageCause.ENTITY_EXPLOSION) {
+			if (VersionIndependantUtils.get().getNovaCoreGameVersion() == NovaCoreGameVersion.V_1_8) {
+				return;
+			}
+
+			this.dropEffects.forEach(effect -> {
+				if (effect.getWorld() == e.getEntity().getWorld()) {
+					if (e.getEntity().getLocation().distance(effect.getFireworkLocation()) < 7) {
+						e.setCancelled(true);
+					}
+				}
+			});
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -259,7 +283,7 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent e) {
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (this.isSkull(e.getClickedBlock().getType())) {
+			if (this.isPotentialyADrop(e.getClickedBlock().getType())) {
 				MedicalSupplyDrop chest = this.getChestAtLocation(e.getClickedBlock().getLocation());
 
 				if (chest != null) {
@@ -292,7 +316,7 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 			}
 		}
 
-		if (this.isSkull(e.getBlock().getType())) {
+		if (this.isPotentialyADrop(e.getBlock().getType())) {
 			MedicalSupplyDrop chest = this.getChestAtLocation(e.getBlock().getLocation());
 
 			if (chest != null) {

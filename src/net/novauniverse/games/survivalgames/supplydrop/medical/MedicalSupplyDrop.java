@@ -32,7 +32,7 @@ public class MedicalSupplyDrop {
 
 		this.lootTable = lootTable;
 		
-		fill();
+		this.fill();
 
 		NovaCore.getInstance().getVersionIndependentUtils().setBlockAsPlayerSkull(this.location.getBlock());
 		
