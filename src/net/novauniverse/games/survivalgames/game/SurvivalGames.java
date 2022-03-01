@@ -21,6 +21,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
+
 import net.novauniverse.games.survivalgames.NovaSurvivalGames;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.timers.TickCallback;
@@ -49,7 +50,7 @@ public class SurvivalGames extends MapGame implements Listener {
 	private boolean countdownOver;
 
 	public SurvivalGames() {
-		super();
+		super(NovaSurvivalGames.getInstance());
 
 		this.started = false;
 		this.ended = false;
