@@ -128,10 +128,10 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		Bukkit.getServer().getPluginManager().registerEvents(mapSelector, this);
 
+		NovaCore.getInstance().getLootTableManager().loadAll(lootTableFolder);
+		
 		Log.info("SurvivalGames", "Loading maps from " + mapFolder.getPath());
 		GameManager.getInstance().getMapReader().loadAll(mapFolder, worldFolder);
-
-		NovaCore.getInstance().getLootTableManager().loadAll(lootTableFolder);
 
 		new DebugCommands();
 	}
