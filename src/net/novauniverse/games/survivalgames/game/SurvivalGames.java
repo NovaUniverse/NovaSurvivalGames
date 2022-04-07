@@ -3,7 +3,7 @@ package net.novauniverse.games.survivalgames.game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -12,6 +12,7 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
@@ -23,6 +24,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import net.novauniverse.games.survivalgames.NovaSurvivalGames;
+import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.ExtendedSpawnLocationConfig;
+import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.IWrapedMaterial;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.timers.TickCallback;
 import net.zeeraa.novacore.commons.utils.Callback;
@@ -34,6 +37,7 @@ import net.zeeraa.novacore.spigot.module.modules.game.GameEndReason;
 import net.zeeraa.novacore.spigot.module.modules.game.MapGame;
 import net.zeeraa.novacore.spigot.module.modules.game.elimination.PlayerQuitEliminationAction;
 import net.zeeraa.novacore.spigot.teams.Team;
+import net.zeeraa.novacore.spigot.teams.TeamManager;
 import net.zeeraa.novacore.spigot.timers.BasicTimer;
 import net.zeeraa.novacore.spigot.utils.PlayerUtils;
 import net.zeeraa.novacore.spigot.utils.RandomFireworkEffect;
@@ -45,7 +49,9 @@ public class SurvivalGames extends MapGame implements Listener {
 	private final boolean randomStartLocation = false;
 	private final int countdownTime = 20;
 
-	private HashMap<UUID, Location> usedStartLocation;
+	private Map<UUID, Location> usedStartLocation;
+	private Map<Team, Location> teamSpawnLocation;
+	private Map<Location, Material> temporaryCageBlocks;
 
 	private boolean countdownOver;
 
@@ -57,7 +63,9 @@ public class SurvivalGames extends MapGame implements Listener {
 
 		this.countdownOver = false;
 
-		this.usedStartLocation = new HashMap<UUID, Location>();
+		this.usedStartLocation = new HashMap<>();
+		this.teamSpawnLocation = new HashMap<>();
+		this.temporaryCageBlocks = new HashMap<>();
 	}
 
 	@Override
@@ -124,27 +132,86 @@ public class SurvivalGames extends MapGame implements Listener {
 			return false;
 		}
 
-		for (Location location : getActiveMap().getStarterLocations()) {
-			setStartCage(location, state);
+		if (!state) {
+			// Clean up cage floor blocks
+			temporaryCageBlocks.forEach((location, material) -> location.getBlock().setType(material));
+			temporaryCageBlocks.clear();
 		}
+
+		getActiveMap().getStarterLocations().forEach(location -> setStartCage(location, state));
 
 		return true;
 	}
 
 	public void setStartCage(Location location, boolean state) {
-		Material material = state ? Material.BARRIER : Material.AIR;
+		Material cageMaterial = state ? Material.BARRIER : Material.AIR;
 
-		location.clone().add(1, 0, 0).getBlock().setType(material);
-		location.clone().add(-1, 0, 0).getBlock().setType(material);
-		location.clone().add(0, 0, 1).getBlock().setType(material);
-		location.clone().add(0, 0, -1).getBlock().setType(material);
+		if (NovaSurvivalGames.getInstance().isUseExtendedSpawnLocations()) {
+			// Box
+			for (int x = -2; x < 3; x++) {
+				for (int y = 0; y < 4; y++) {
+					for (int z = -2; z < 3; z++) {
+						location.clone().add(x, y, z).getBlock().setType(cageMaterial);
+					}
+				}
+			}
 
-		location.clone().add(1, 1, 0).getBlock().setType(material);
-		location.clone().add(-1, 1, 0).getBlock().setType(material);
-		location.clone().add(0, 1, 1).getBlock().setType(material);
-		location.clone().add(0, 1, -1).getBlock().setType(material);
+			// Inside
+			if (state == true) {
+				for (int x = -1; x < 2; x++) {
+					for (int y = 0; y < 3; y++) {
+						for (int z = -1; z < 2; z++) {
+							location.clone().add(x, y, z).getBlock().setType(Material.AIR);
+						}
+					}
+				}
+			}
 
-		location.clone().add(0, 2, 0).getBlock().setType(material);
+			if (state) {
+				// Cage floor
+				ExtendedSpawnLocationConfig config = (ExtendedSpawnLocationConfig) this.getActiveMap().getMapData().getMapModule(ExtendedSpawnLocationConfig.class);
+
+				IWrapedMaterial floorMaterial = NovaSurvivalGames.DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL;
+				boolean keepFloor = false;
+				if (config != null) {
+					if (config.isDisabled()) {
+						return;
+					}
+					floorMaterial = config.getFloorMaterial();
+					keepFloor = config.isKeepAfterStart();
+				}
+
+				// Bottom
+				Location floor = location.clone().add(0, -1, 0);
+				for (int x = -1; x <= 1; x++) {
+					for (int z = -1; z <= 1; z++) {
+						Location l = floor.clone().add(x, 0, z);
+
+						Block block = l.getBlock();
+
+						if (block.isLiquid() || !block.getType().isSolid()) {
+							if (!keepFloor) {
+								temporaryCageBlocks.put(l, block.getType());
+							}
+							floorMaterial.setBlock(block);
+						}
+					}
+				}
+			}
+		} else {
+			// Use old version
+			location.clone().add(1, 0, 0).getBlock().setType(cageMaterial);
+			location.clone().add(-1, 0, 0).getBlock().setType(cageMaterial);
+			location.clone().add(0, 0, 1).getBlock().setType(cageMaterial);
+			location.clone().add(0, 0, -1).getBlock().setType(cageMaterial);
+
+			location.clone().add(1, 1, 0).getBlock().setType(cageMaterial);
+			location.clone().add(-1, 1, 0).getBlock().setType(cageMaterial);
+			location.clone().add(0, 1, 1).getBlock().setType(cageMaterial);
+			location.clone().add(0, 1, -1).getBlock().setType(cageMaterial);
+
+			location.clone().add(0, 2, 0).getBlock().setType(cageMaterial);
+		}
 	}
 
 	public void tpToSpectator(Player player) {
@@ -158,22 +225,49 @@ public class SurvivalGames extends MapGame implements Listener {
 
 	public void tpToArena(Player player) {
 		if (hasActiveMap()) {
-			for (int i = 0; i < getActiveMap().getStarterLocations().size(); i++) {
-				Location location = getActiveMap().getStarterLocations().get(i);
+			if (NovaSurvivalGames.getInstance().isUseExtendedSpawnLocations()) {
+				// Use new version
+				Team team = TeamManager.getTeamManager().getPlayerTeam(player);
+				if (team != null) {
+					if (teamSpawnLocation.containsKey(team)) {
+						this.tpToArena(player, teamSpawnLocation.get(team));
+						return;
+					} else {
+						for (int i = 0; i < getActiveMap().getStarterLocations().size(); i++) {
+							Location location = getActiveMap().getStarterLocations().get(i);
 
-				if (usedStartLocation.containsValue(location)) {
-					continue;
+							if (teamSpawnLocation.containsValue(location)) {
+								// Already in use
+								continue;
+							}
+
+							teamSpawnLocation.put(team, location);
+							this.tpToArena(player, location);
+							return;
+						}
+					}
 				}
+			} else {
+				// Use old version
+				for (int i = 0; i < getActiveMap().getStarterLocations().size(); i++) {
+					Location location = getActiveMap().getStarterLocations().get(i);
 
-				this.tpToArena(player, location);
-				return;
+					if (usedStartLocation.containsValue(location)) {
+						// Already in use
+						continue;
+					}
+
+					this.tpToArena(player, location);
+					return;
+				}
 			}
-			Random random = new Random();
-			Location backupLocation = getActiveMap().getStarterLocations().get(random.nextInt(getActiveMap().getStarterLocations().size()));
 
+			// Use fallback
+			Log.warn("SurvivalGames", "Using random location for " + player.getName() + " since for some reason getting an empty spawn location for them failed");
+			Location backupLocation = getActiveMap().getStarterLocations().get(this.random.nextInt(getActiveMap().getStarterLocations().size()));
 			this.tpToArena(player, backupLocation);
 		} else {
-			System.err.println("tpToArena() called without map");
+			Log.error("SurvivalGames", "SurvivalGames#tpToArena() called without map");
 		}
 	}
 
@@ -206,6 +300,10 @@ public class SurvivalGames extends MapGame implements Listener {
 
 			fwm.setPower(2);
 			fwm.addEffect(RandomFireworkEffect.randomFireworkEffect());
+
+			if (random.nextBoolean()) {
+				fwm.addEffect(RandomFireworkEffect.randomFireworkEffect());
+			}
 
 			fw.setFireworkMeta(fwm);
 		});
@@ -294,7 +392,7 @@ public class SurvivalGames extends MapGame implements Listener {
 				for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 					VersionIndependantUtils.get().playSound(player, player.getLocation(), VersionIndependantSound.NOTE_PLING, 1F, 1F);
 				}
-				
+
 				sendBeginEvent();
 			}
 		});

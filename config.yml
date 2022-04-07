@@ -3,3 +3,5 @@ allow_reconnect: true
 combat_tagging: true
 
 player_elimination_delay: 180
+
+extended_spawn_location: false

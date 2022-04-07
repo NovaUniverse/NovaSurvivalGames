@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
@@ -16,6 +17,9 @@ import org.json.JSONObject;
 
 import net.novauniverse.games.survivalgames.debug.DebugCommands;
 import net.novauniverse.games.survivalgames.game.SurvivalGames;
+import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.ExtendedSpawnLocationConfig;
+import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.IWrapedMaterial;
+import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.WrapedMaterial;
 import net.novauniverse.games.survivalgames.map.mapmodules.supplydrop.medical.MedicalSupplyDropMapModule;
 import net.novauniverse.games.survivalgames.supplydrop.medical.MedicalSupplyDropManager;
 import net.zeeraa.novacore.commons.log.Log;
@@ -31,6 +35,7 @@ import net.zeeraa.novacore.spigot.module.modules.game.mapselector.selectors.guiv
 import net.zeeraa.novacore.spigot.module.modules.gamelobby.GameLobby;
 
 public class NovaSurvivalGames extends JavaPlugin implements Listener {
+	public static final IWrapedMaterial DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL = new WrapedMaterial(Material.BARRIER);
 	private static NovaSurvivalGames instance;
 
 	public static NovaSurvivalGames getInstance() {
@@ -40,6 +45,8 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 	private boolean allowReconnect;
 	private boolean combatTagging;
 	private int reconnectTime;
+
+	private boolean useExtendedSpawnLocations;
 
 	private SurvivalGames game;
 
@@ -59,6 +66,14 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		return game;
 	}
 
+	public boolean isUseExtendedSpawnLocations() {
+		return useExtendedSpawnLocations;
+	}
+
+	public void setUseExtendedSpawnLocations(boolean useExtendedSpawnLocations) {
+		this.useExtendedSpawnLocations = useExtendedSpawnLocations;
+	}
+
 	@Override
 	public void onEnable() {
 		NovaSurvivalGames.instance = this;
@@ -68,6 +83,8 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		allowReconnect = getConfig().getBoolean("allow_reconnect");
 		combatTagging = getConfig().getBoolean("combat_tagging");
 		reconnectTime = getConfig().getInt("player_elimination_delay");
+
+		useExtendedSpawnLocations = getConfig().getBoolean("extended_spawn_location");
 
 		File mapFolder = new File(this.getDataFolder().getPath() + File.separator + "Maps");
 		File worldFolder = new File(this.getDataFolder().getPath() + File.separator + "Worlds");
@@ -116,6 +133,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		ModuleManager.loadModule(MedicalSupplyDropManager.class);
 
 		MapModuleManager.addMapModule("novauniverse.survivalgames.medicalsupplydrop", MedicalSupplyDropMapModule.class);
+		MapModuleManager.addMapModule("novauniverse.survivalgames.extendedspawnlocation.config", ExtendedSpawnLocationConfig.class);
 
 		this.game = new SurvivalGames();
 
@@ -129,7 +147,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		Bukkit.getServer().getPluginManager().registerEvents(mapSelector, this);
 
 		NovaCore.getInstance().getLootTableManager().loadAll(lootTableFolder);
-		
+
 		Log.info("SurvivalGames", "Loading maps from " + mapFolder.getPath());
 		GameManager.getInstance().getMapReader().loadAll(mapFolder, worldFolder);
 
