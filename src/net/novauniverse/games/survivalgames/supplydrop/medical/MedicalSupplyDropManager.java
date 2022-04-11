@@ -50,10 +50,9 @@ public class MedicalSupplyDropManager extends NovaModule implements Listener {
 	public static MedicalSupplyDropManager getInstance() {
 		return instance;
 	}
-
-	@Override
-	public String getName() {
-		return "LootDropManager";
+	
+	public MedicalSupplyDropManager() {
+		super("NovaUniverse.MedicalSupplyDropManager");
 	}
 
 	@Override

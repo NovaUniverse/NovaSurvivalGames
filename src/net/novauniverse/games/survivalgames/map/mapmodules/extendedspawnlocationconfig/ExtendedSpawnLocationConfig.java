@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import net.novauniverse.games.survivalgames.NovaSurvivalGames;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
-import net.zeeraa.novacore.spigot.module.modules.game.map.mapmodule.MapModule;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
 
 public class ExtendedSpawnLocationConfig extends MapModule {
 	private IWrapedMaterial floorMaterial;
