@@ -149,7 +149,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		NovaCore.getInstance().getLootTableManager().loadAll(lootTableFolder);
 
 		Log.info("SurvivalGames", "Loading maps from " + mapFolder.getPath());
-		GameManager.getInstance().loadMaps(mapFolder, worldFolder);
+		GameManager.getInstance().readMapsFromFolder(mapFolder, worldFolder);
 
 		new DebugCommands();
 	}
