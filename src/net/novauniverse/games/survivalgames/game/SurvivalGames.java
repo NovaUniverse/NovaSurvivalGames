@@ -416,6 +416,7 @@ public class SurvivalGames extends MapGame implements Listener {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(NovaCore.getInstance(), new Runnable() {
 			@Override
 			public void run() {
+				Log.trace(getName(), "Calling tpToSpectator(" + player.getName() + ")");
 				tpToSpectator(player);
 			}
 		}, 5L);
