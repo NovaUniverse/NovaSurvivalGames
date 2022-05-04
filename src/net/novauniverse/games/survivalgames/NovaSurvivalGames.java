@@ -26,7 +26,6 @@ import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.abstraction.events.VersionIndependantPlayerAchievementAwardedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModuleManager;
-import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.lootdrop.medical.MedicalSupplyDropManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.mapselector.selectors.guivoteselector.GUIMapVote;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.GameLobby;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
@@ -128,8 +127,6 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		ModuleManager.enable(GameManager.class);
 		ModuleManager.enable(GameLobby.class);
 		ModuleManager.enable(CompassTracker.class);
-
-		ModuleManager.loadModule(this, MedicalSupplyDropManager.class);
 
 		MapModuleManager.addMapModule("novauniverse.survivalgames.extendedspawnlocation.config", ExtendedSpawnLocationConfig.class);
 
