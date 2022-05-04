@@ -20,14 +20,13 @@ import net.novauniverse.games.survivalgames.game.SurvivalGames;
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.ExtendedSpawnLocationConfig;
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.IWrapedMaterial;
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.WrapedMaterial;
-import net.novauniverse.games.survivalgames.map.mapmodules.supplydrop.medical.MedicalSupplyDropMapModule;
-import net.novauniverse.games.survivalgames.supplydrop.medical.MedicalSupplyDropManager;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.utils.JSONFileUtils;
 import net.zeeraa.novacore.spigot.NovaCore;
 import net.zeeraa.novacore.spigot.abstraction.events.VersionIndependantPlayerAchievementAwardedEvent;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModuleManager;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.lootdrop.medical.MedicalSupplyDropManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.mapselector.selectors.guivoteselector.GUIMapVote;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.GameLobby;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
@@ -132,7 +131,6 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 
 		ModuleManager.loadModule(this, MedicalSupplyDropManager.class);
 
-		MapModuleManager.addMapModule("novauniverse.survivalgames.medicalsupplydrop", MedicalSupplyDropMapModule.class);
 		MapModuleManager.addMapModule("novauniverse.survivalgames.extendedspawnlocation.config", ExtendedSpawnLocationConfig.class);
 
 		this.game = new SurvivalGames();
