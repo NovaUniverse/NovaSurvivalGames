@@ -320,6 +320,12 @@ public class SurvivalGames extends MapGame implements Listener {
 
 	@Override
 	public void onStart() {
+		if (started) {
+			return;
+		}
+
+		this.setDropItemsOnCombatLog(true);
+
 		ArrayList<Player> toTeleport = new ArrayList<Player>();
 		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 			if (players.contains(player.getUniqueId())) {
