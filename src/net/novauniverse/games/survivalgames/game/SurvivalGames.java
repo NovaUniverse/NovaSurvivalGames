@@ -381,6 +381,8 @@ public class SurvivalGames extends MapGame implements Listener {
 
 		this.started = true;
 
+		Bukkit.getServer().getOnlinePlayers().forEach(player -> VersionIndependantUtils.get().sendTitle(player, "", ChatColor.GOLD + "Starting in " + countdownTime + " seconds", 10, 20, 10));
+		
 		BasicTimer startTimer = new BasicTimer(countdownTime, 20L);
 		startTimer.addFinishCallback(new Callback() {
 			@Override
