@@ -375,13 +375,9 @@ public class SurvivalGames extends MapGame implements Listener {
 
 		Log.debug("Final toTeleport size: " + toTeleport.size());
 
-		for (Location location : getActiveMap().getStarterLocations()) {
-			setStartCage(location, true);
-		}
+		getActiveMap().getStarterLocations().forEach(location -> setStartCage(location, true));
 
-		for (Player player : toTeleport) {
-			tpToArena(player);
-		}
+		toTeleport.forEach(player -> tpToArena(player));
 
 		this.started = true;
 
@@ -395,9 +391,11 @@ public class SurvivalGames extends MapGame implements Listener {
 
 				setCages(false);
 
-				for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+				Bukkit.getServer().getOnlinePlayers().forEach(player -> {
+					player.setFoodLevel(20);
+					player.setSaturation(20);
 					VersionIndependantUtils.get().playSound(player, player.getLocation(), VersionIndependantSound.NOTE_PLING, 1F, 1F);
-				}
+				});
 
 				sendBeginEvent();
 			}
