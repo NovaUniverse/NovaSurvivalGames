@@ -348,8 +348,8 @@ public class SurvivalGames extends MapGame implements Listener {
 		}, 200L);
 
 		if (randomStartLocation) {
-			Collections.shuffle(getActiveMap().getStarterLocations());
-			Collections.shuffle(toTeleport);
+			Collections.shuffle(getActiveMap().getStarterLocations(), getRandom());
+			Collections.shuffle(toTeleport, getRandom());
 		} else {
 			if (NovaCore.getInstance().hasTeamManager()) {
 				ArrayList<UUID> teamOrder = new ArrayList<UUID>();
@@ -358,7 +358,7 @@ public class SurvivalGames extends MapGame implements Listener {
 					teamOrder.add(team.getTeamUuid());
 				}
 
-				Collections.shuffle(teamOrder);
+				Collections.shuffle(teamOrder, getRandom());
 
 				ArrayList<Player> toTeleportReal = new ArrayList<Player>();
 
