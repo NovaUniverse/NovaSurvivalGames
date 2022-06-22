@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
@@ -54,6 +55,7 @@ public class SurvivalGames extends MapGame implements Listener {
 	private Map<Location, Material> temporaryCageBlocks;
 
 	private boolean countdownOver;
+	private boolean allowDamage;
 
 	public SurvivalGames() {
 		super(NovaSurvivalGames.getInstance());
@@ -62,6 +64,7 @@ public class SurvivalGames extends MapGame implements Listener {
 		this.ended = false;
 
 		this.countdownOver = false;
+		this.allowDamage = false;
 
 		this.usedStartLocation = new HashMap<>();
 		this.teamSpawnLocation = new HashMap<>();
@@ -382,7 +385,7 @@ public class SurvivalGames extends MapGame implements Listener {
 		this.started = true;
 
 		Bukkit.getServer().getOnlinePlayers().forEach(player -> VersionIndependentUtils.get().sendTitle(player, "", ChatColor.GOLD + "Starting in " + countdownTime + " seconds", 10, 20, 10));
-		
+
 		BasicTimer startTimer = new BasicTimer(countdownTime, 20L);
 		startTimer.addFinishCallback(new Callback() {
 			@Override
@@ -392,6 +395,8 @@ public class SurvivalGames extends MapGame implements Listener {
 				// "May the odds be ever in your favour");
 
 				setCages(false);
+
+				allowDamage = true;
 
 				Bukkit.getServer().getOnlinePlayers().forEach(player -> {
 					player.setFoodLevel(20);
@@ -415,6 +420,15 @@ public class SurvivalGames extends MapGame implements Listener {
 		});
 
 		startTimer.start();
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onEntityDamage(EntityDamageEvent e) {
+		if (e.getEntity() instanceof Player) {
+			if (!allowDamage) {
+				e.setCancelled(true);
+			}
+		}
 	}
 
 	@Override
