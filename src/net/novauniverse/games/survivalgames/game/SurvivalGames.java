@@ -391,7 +391,6 @@ public class SurvivalGames extends MapGame implements Listener {
 			@Override
 			public void execute() {
 				countdownOver = true;
-				
 				setCages(false);
 
 				allowDamage = true;
