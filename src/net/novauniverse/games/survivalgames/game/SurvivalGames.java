@@ -391,9 +391,7 @@ public class SurvivalGames extends MapGame implements Listener {
 			@Override
 			public void execute() {
 				countdownOver = true;
-				// Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD +
-				// "May the odds be ever in your favour");
-
+				
 				setCages(false);
 
 				allowDamage = true;
