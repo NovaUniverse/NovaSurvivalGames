@@ -23,6 +23,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import net.novauniverse.games.survivalgames.NovaSurvivalGames;
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.ExtendedSpawnLocationConfig;
@@ -36,6 +37,8 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameEndReason;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.MapGame;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.PlayerQuitEliminationAction;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.DelayedGameTrigger;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.GameTrigger;
 import net.zeeraa.novacore.spigot.language.LanguageManager;
 import net.zeeraa.novacore.spigot.teams.Team;
 import net.zeeraa.novacore.spigot.teams.TeamManager;
@@ -59,6 +62,8 @@ public class SurvivalGames extends MapGame implements Listener {
 
 	private boolean countdownStarted;
 
+	private boolean hasWorldBorder;
+
 	public SurvivalGames() {
 		super(NovaSurvivalGames.getInstance());
 
@@ -73,6 +78,8 @@ public class SurvivalGames extends MapGame implements Listener {
 		this.temporaryCageBlocks = new HashMap<>();
 
 		this.countdownStarted = false;
+
+		this.hasWorldBorder = false;
 	}
 
 	@Override
@@ -397,6 +404,17 @@ public class SurvivalGames extends MapGame implements Listener {
 		} else {
 			Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Waiting for admins to start the countdown");
 			Bukkit.getServer().getOnlinePlayers().forEach(player -> VersionIndependentSound.NOTE_PLING.play(player));
+
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					GameTrigger trigger = getTrigger("novacore.worldborder.start");
+					if (trigger != null) {
+						hasWorldBorder = true;
+						((DelayedGameTrigger) trigger).stop();
+					}
+				}
+			}.runTaskLater(getPlugin(), 20L);
 		}
 	}
 
@@ -445,6 +463,14 @@ public class SurvivalGames extends MapGame implements Listener {
 		});
 
 		startTimer.start();
+
+		if (hasWorldBorder) {
+			GameTrigger trigger = getTrigger("novacore.worldborder.start");
+			if (trigger != null) {
+				((DelayedGameTrigger) trigger).start();
+			}
+		}
+
 		return true;
 	}
 

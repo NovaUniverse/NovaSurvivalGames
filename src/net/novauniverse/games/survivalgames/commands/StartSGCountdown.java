@@ -19,11 +19,13 @@ public class StartSGCountdown extends NovaCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-		if (NovaSurvivalGames.getInstance().getGame().hasStarted()) {
+		if (!NovaSurvivalGames.getInstance().getGame().hasStarted()) {
+			sender.sendMessage(ChatColor.RED + "Game has not started yet");
 			return false;
 		}
 
 		if (NovaSurvivalGames.getInstance().getGame().isCountdownStarted()) {
+			sender.sendMessage(ChatColor.RED + "Countdown already started");
 			return false;
 		}
 
