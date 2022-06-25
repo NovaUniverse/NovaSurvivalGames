@@ -3,6 +3,7 @@ package net.novauniverse.games.survivalgames.game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -344,7 +345,7 @@ public class SurvivalGames extends MapGame implements Listener {
 
 		this.setDropItemsOnCombatLog(true);
 
-		ArrayList<Player> toTeleport = new ArrayList<Player>();
+		List<Player> toTeleport = new ArrayList<Player>();
 		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 			if (players.contains(player.getUniqueId())) {
 				Log.trace(player.getName() + " is in the player list");
@@ -370,15 +371,13 @@ public class SurvivalGames extends MapGame implements Listener {
 			Collections.shuffle(toTeleport, getRandom());
 		} else {
 			if (NovaCore.getInstance().hasTeamManager()) {
-				ArrayList<UUID> teamOrder = new ArrayList<UUID>();
+				List<UUID> teamOrder = new ArrayList<UUID>();
 
-				for (Team team : NovaCore.getInstance().getTeamManager().getTeams()) {
-					teamOrder.add(team.getTeamUuid());
-				}
+				NovaCore.getInstance().getTeamManager().getTeams().forEach(team -> teamOrder.add(team.getTeamUuid()));
 
 				Collections.shuffle(teamOrder, getRandom());
 
-				ArrayList<Player> toTeleportReal = new ArrayList<Player>();
+				List<Player> toTeleportReal = new ArrayList<Player>();
 
 				for (UUID uuid : teamOrder) {
 					for (Player pt : toTeleport) {
