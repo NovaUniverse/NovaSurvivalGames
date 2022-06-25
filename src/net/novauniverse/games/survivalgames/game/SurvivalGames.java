@@ -57,6 +57,8 @@ public class SurvivalGames extends MapGame implements Listener {
 	private boolean countdownOver;
 	private boolean allowDamage;
 
+	private boolean countdownStarted;
+
 	public SurvivalGames() {
 		super(NovaSurvivalGames.getInstance());
 
@@ -69,6 +71,8 @@ public class SurvivalGames extends MapGame implements Listener {
 		this.usedStartLocation = new HashMap<>();
 		this.teamSpawnLocation = new HashMap<>();
 		this.temporaryCageBlocks = new HashMap<>();
+
+		this.countdownStarted = false;
 	}
 
 	@Override
@@ -128,6 +132,10 @@ public class SurvivalGames extends MapGame implements Listener {
 	@Override
 	public boolean canAttack(LivingEntity attacker, LivingEntity target) {
 		return countdownOver;
+	}
+
+	public boolean isCountdownStarted() {
+		return countdownStarted;
 	}
 
 	public boolean setCages(boolean state) {
@@ -384,6 +392,26 @@ public class SurvivalGames extends MapGame implements Listener {
 
 		this.started = true;
 
+		if (NovaSurvivalGames.getInstance().isAutoStartCountdown()) {
+			startCountdown();
+		} else {
+			Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Waiting for admins to start the countdown");
+			Bukkit.getServer().getOnlinePlayers().forEach(player -> VersionIndependentSound.NOTE_PLING.play(player));
+		}
+	}
+
+	public boolean startCountdown() {
+		if (!started) {
+			return false;
+		}
+
+		if (countdownStarted) {
+			return false;
+		}
+
+		countdownStarted = true;
+
+		Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Starting in " + countdownTime + " seconds");
 		Bukkit.getServer().getOnlinePlayers().forEach(player -> VersionIndependentUtils.get().sendTitle(player, "", ChatColor.GOLD + "Starting in " + countdownTime + " seconds", 10, 20, 10));
 
 		BasicTimer startTimer = new BasicTimer(countdownTime, 20L);
@@ -417,6 +445,7 @@ public class SurvivalGames extends MapGame implements Listener {
 		});
 
 		startTimer.start();
+		return true;
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
