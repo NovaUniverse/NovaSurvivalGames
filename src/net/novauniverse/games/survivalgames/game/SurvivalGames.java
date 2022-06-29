@@ -415,6 +415,8 @@ public class SurvivalGames extends MapGame implements Listener {
 				}
 			}.runTaskLater(getPlugin(), 20L);
 		}
+
+		getWorld().setGameRuleValue("announceAdvancements", "false");
 	}
 
 	public boolean startCountdown() {
