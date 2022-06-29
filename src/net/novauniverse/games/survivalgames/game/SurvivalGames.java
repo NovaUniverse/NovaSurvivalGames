@@ -21,6 +21,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -499,6 +501,32 @@ public class SurvivalGames extends MapGame implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		if (!hasStarted()) {
 			PlayerUtils.clearPotionEffects(e.getPlayer());
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onBlockBreak(BlockBreakEvent e) {
+		if (NovaSurvivalGames.getInstance().isDisableEarlyBlockBreakCheck()) {
+			return;
+		}
+
+		if (!countdownOver) {
+			if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+				e.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onBlockPlace(BlockPlaceEvent e) {
+		if (NovaSurvivalGames.getInstance().isDisableEarlyBlockBreakCheck()) {
+			return;
+		}
+
+		if (!countdownOver) {
+			if (e.getPlayer().getGameMode() != GameMode.CREATIVE) {
+				e.setCancelled(true);
+			}
 		}
 	}
 }

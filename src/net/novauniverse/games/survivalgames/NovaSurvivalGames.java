@@ -48,6 +48,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 	private int reconnectTime;
 
 	private boolean useExtendedSpawnLocations;
+	private boolean disableEarlyBlockBreakCheck;
 
 	private SurvivalGames game;
 
@@ -79,6 +80,10 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		return autoStartCountdown;
 	}
 
+	public boolean isDisableEarlyBlockBreakCheck() {
+		return disableEarlyBlockBreakCheck;
+	}
+
 	@Override
 	public void onEnable() {
 		NovaSurvivalGames.instance = this;
@@ -91,6 +96,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		reconnectTime = getConfig().getInt("player_elimination_delay");
 
 		useExtendedSpawnLocations = getConfig().getBoolean("extended_spawn_location");
+		disableEarlyBlockBreakCheck = getConfig().getBoolean("disable_early_block_break_check");
 
 		File mapFolder = new File(this.getDataFolder().getPath() + File.separator + "Maps");
 		File worldFolder = new File(this.getDataFolder().getPath() + File.separator + "Worlds");

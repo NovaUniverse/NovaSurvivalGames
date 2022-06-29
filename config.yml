@@ -7,3 +7,6 @@ player_elimination_delay: 180
 extended_spawn_location: false
 
 auto_start_countdown: true
+
+# Set to true for legacy version where you can destroy blocks before the game starts
+disable_early_block_break_check: false
