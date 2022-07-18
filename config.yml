@@ -4,9 +4,12 @@ combat_tagging: true
 
 player_elimination_delay: 180
 
-extended_spawn_location: false
+extended_spawn_location: true
 
 auto_start_countdown: true
 
 # Set to true for legacy version where you can destroy blocks before the game starts
 disable_early_block_break_check: false
+
+# Set to true to not use the default game lobby
+disable_novacore_gamelobby: false

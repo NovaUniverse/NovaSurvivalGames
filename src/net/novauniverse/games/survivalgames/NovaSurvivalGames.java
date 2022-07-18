@@ -28,6 +28,7 @@ import net.zeeraa.novacore.spigot.abstraction.events.VersionIndependentPlayerAch
 import net.zeeraa.novacore.spigot.command.CommandRegistry;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModuleManager;
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.mapselector.selectors.RandomMapSelector;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.mapselector.selectors.guivoteselector.GUIMapVote;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.GameLobby;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
@@ -90,6 +91,8 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 
 		saveDefaultConfig();
 
+		boolean disableNovaCoreGameLobby = getConfig().getBoolean("disable_novacore_gamelobby");
+		
 		allowReconnect = getConfig().getBoolean("allow_reconnect");
 		combatTagging = getConfig().getBoolean("combat_tagging");
 		autoStartCountdown = getConfig().getBoolean("auto_start_countdown");
@@ -139,7 +142,11 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		}
 
 		ModuleManager.enable(GameManager.class);
-		ModuleManager.enable(GameLobby.class);
+		
+		if(!disableNovaCoreGameLobby) {
+			ModuleManager.enable(GameLobby.class);			
+		}
+		
 		ModuleManager.enable(CompassTracker.class);
 
 		MapModuleManager.addMapModule("novauniverse.survivalgames.extendedspawnlocation.config", ExtendedSpawnLocationConfig.class);
@@ -148,12 +155,16 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 
 		GameManager.getInstance().loadGame(game);
 
-		GUIMapVote mapSelector = new GUIMapVote();
-
-		GameManager.getInstance().setMapSelector(mapSelector);
-
+		
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
-		Bukkit.getServer().getPluginManager().registerEvents(mapSelector, this);
+		
+		if(!disableNovaCoreGameLobby) {
+			GUIMapVote mapSelector = new GUIMapVote();
+			GameManager.getInstance().setMapSelector(mapSelector);
+			Bukkit.getServer().getPluginManager().registerEvents(mapSelector, this);	
+		} else {
+			GameManager.getInstance().setMapSelector(new RandomMapSelector());
+		}
 
 		NovaCore.getInstance().getLootTableManager().loadAll(lootTableFolder);
 
