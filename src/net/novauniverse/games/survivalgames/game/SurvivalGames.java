@@ -344,6 +344,8 @@ public class SurvivalGames extends MapGame implements Listener {
 		if (started) {
 			return;
 		}
+		
+		world.setAutoSave(false);
 
 		this.setDropItemsOnCombatLog(true);
 
