@@ -4,6 +4,7 @@ combat_tagging: true
 
 player_elimination_delay: 180
 
+# This requires the team manager to be enabled
 extended_spawn_location: true
 
 auto_start_countdown: true
