@@ -18,6 +18,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -29,6 +30,7 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.novauniverse.games.survivalgames.NovaSurvivalGames;
+import net.novauniverse.games.survivalgames.event.SurvivalgamesCountdownEvent;
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.ExtendedSpawnLocationConfig;
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.IWrapedMaterial;
 import net.zeeraa.novacore.commons.log.Log;
@@ -344,7 +346,7 @@ public class SurvivalGames extends MapGame implements Listener {
 		if (started) {
 			return;
 		}
-		
+
 		world.setAutoSave(false);
 
 		this.setDropItemsOnCombatLog(true);
@@ -459,6 +461,9 @@ public class SurvivalGames extends MapGame implements Listener {
 		startTimer.addTickCallback(new TickCallback() {
 			@Override
 			public void execute(long timeLeft) {
+				Event event = new SurvivalgamesCountdownEvent((int) timeLeft);
+				Bukkit.getServer().getPluginManager().callEvent(event);
+
 				Bukkit.getServer().getOnlinePlayers().forEach(player -> {
 					VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.NOTE_PLING, 1F, 1.3F);
 					VersionIndependentUtils.get().sendActionBarMessage(player, LanguageManager.getString(player, "novacore.game.starting_in", timeLeft));
