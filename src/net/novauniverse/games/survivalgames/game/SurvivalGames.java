@@ -337,7 +337,9 @@ public class SurvivalGames extends MapGame implements Listener {
 			PlayerUtils.clearPlayerInventory(player);
 			PlayerUtils.resetPlayerXP(player);
 			player.setGameMode(GameMode.SPECTATOR);
-			VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.WITHER_DEATH, 1F, 1F);
+			if (!NovaSurvivalGames.getInstance().isDisableDefaultEndSound()) {
+				VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.WITHER_DEATH, 1F, 1F);
+			}
 		});
 	}
 

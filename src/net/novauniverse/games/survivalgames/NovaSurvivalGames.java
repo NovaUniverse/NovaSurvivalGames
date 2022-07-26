@@ -50,6 +50,8 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 
 	private boolean useExtendedSpawnLocations;
 	private boolean disableEarlyBlockBreakCheck;
+	
+	private boolean disableDefaultEndSound;
 
 	private SurvivalGames game;
 
@@ -85,6 +87,14 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		return disableEarlyBlockBreakCheck;
 	}
 
+	public boolean isDisableDefaultEndSound() {
+		return disableDefaultEndSound;
+	}
+	
+	public void setDisableDefaultEndSound(boolean disableDefaultEndSound) {
+		this.disableDefaultEndSound = disableDefaultEndSound;
+	}
+	
 	@Override
 	public void onEnable() {
 		NovaSurvivalGames.instance = this;
@@ -100,6 +110,8 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 
 		useExtendedSpawnLocations = getConfig().getBoolean("extended_spawn_location");
 		disableEarlyBlockBreakCheck = getConfig().getBoolean("disable_early_block_break_check");
+		
+		disableDefaultEndSound = getConfig().getBoolean("disable_default_end_sound");
 
 		File mapFolder = new File(this.getDataFolder().getPath() + File.separator + "Maps");
 		File worldFolder = new File(this.getDataFolder().getPath() + File.separator + "Worlds");

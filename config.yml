@@ -14,3 +14,6 @@ disable_early_block_break_check: false
 
 # Set to true to not use the default game lobby
 disable_novacore_gamelobby: false
+
+# Set to true to not play the wither death sound on end
+disable_default_end_sound: false
