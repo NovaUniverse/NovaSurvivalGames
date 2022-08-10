@@ -29,7 +29,7 @@ public class ExtendedSpawnLocationConfig extends MapModule {
 				} else {
 					floorMaterial = new WrapedMaterial(Material.valueOf(materialString));
 				}
-				
+
 			} catch (Exception e) {
 				Log.error("ExtendedSpawnLocationConfig", "Failed to parse material " + materialString + ". " + e.getClass().getName() + " " + e.getMessage());
 			}
@@ -42,7 +42,7 @@ public class ExtendedSpawnLocationConfig extends MapModule {
 		} else {
 			keepAfterStart = false;
 		}
-		
+
 		if (json.has("disabled")) {
 			disabled = json.getBoolean("disabled");
 		} else {
@@ -57,7 +57,7 @@ public class ExtendedSpawnLocationConfig extends MapModule {
 	public boolean isKeepAfterStart() {
 		return keepAfterStart;
 	}
-	
+
 	public boolean isDisabled() {
 		return disabled;
 	}

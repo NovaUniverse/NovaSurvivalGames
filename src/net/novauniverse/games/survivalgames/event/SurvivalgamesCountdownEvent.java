@@ -3,7 +3,7 @@ package net.novauniverse.games.survivalgames.event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class SurvivalgamesCountdownEvent  extends Event {
+public class SurvivalgamesCountdownEvent extends Event {
 	private static final HandlerList HANDLERS_LIST = new HandlerList();
 
 	private int timeLeft;

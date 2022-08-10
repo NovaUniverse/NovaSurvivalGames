@@ -50,7 +50,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 
 	private boolean useExtendedSpawnLocations;
 	private boolean disableEarlyBlockBreakCheck;
-	
+
 	private boolean disableDefaultEndSound;
 
 	private SurvivalGames game;
@@ -90,11 +90,11 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 	public boolean isDisableDefaultEndSound() {
 		return disableDefaultEndSound;
 	}
-	
+
 	public void setDisableDefaultEndSound(boolean disableDefaultEndSound) {
 		this.disableDefaultEndSound = disableDefaultEndSound;
 	}
-	
+
 	@Override
 	public void onEnable() {
 		NovaSurvivalGames.instance = this;
@@ -102,7 +102,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		saveDefaultConfig();
 
 		boolean disableNovaCoreGameLobby = getConfig().getBoolean("disable_novacore_gamelobby");
-		
+
 		allowReconnect = getConfig().getBoolean("allow_reconnect");
 		combatTagging = getConfig().getBoolean("combat_tagging");
 		autoStartCountdown = getConfig().getBoolean("auto_start_countdown");
@@ -110,7 +110,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 
 		useExtendedSpawnLocations = getConfig().getBoolean("extended_spawn_location");
 		disableEarlyBlockBreakCheck = getConfig().getBoolean("disable_early_block_break_check");
-		
+
 		disableDefaultEndSound = getConfig().getBoolean("disable_default_end_sound");
 
 		File mapFolder = new File(this.getDataFolder().getPath() + File.separator + "Maps");
@@ -154,11 +154,11 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		}
 
 		ModuleManager.enable(GameManager.class);
-		
-		if(!disableNovaCoreGameLobby) {
-			ModuleManager.enable(GameLobby.class);			
+
+		if (!disableNovaCoreGameLobby) {
+			ModuleManager.enable(GameLobby.class);
 		}
-		
+
 		ModuleManager.enable(CompassTracker.class);
 
 		MapModuleManager.addMapModule("novauniverse.survivalgames.extendedspawnlocation.config", ExtendedSpawnLocationConfig.class);
@@ -167,13 +167,12 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 
 		GameManager.getInstance().loadGame(game);
 
-		
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
-		
-		if(!disableNovaCoreGameLobby) {
+
+		if (!disableNovaCoreGameLobby) {
 			GUIMapVote mapSelector = new GUIMapVote();
 			GameManager.getInstance().setMapSelector(mapSelector);
-			Bukkit.getServer().getPluginManager().registerEvents(mapSelector, this);	
+			Bukkit.getServer().getPluginManager().registerEvents(mapSelector, this);
 		} else {
 			GameManager.getInstance().setMapSelector(new RandomMapSelector());
 		}
