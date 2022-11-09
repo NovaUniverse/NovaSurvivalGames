@@ -248,7 +248,7 @@ public class SurvivalGames extends MapGame implements Listener {
 
 	public void tpToArena(Player player) {
 		if (hasActiveMap()) {
-			if (NovaSurvivalGames.getInstance().isUseExtendedSpawnLocations()) {
+			if (NovaSurvivalGames.getInstance().isUseExtendedSpawnLocations() && NovaCore.getInstance().hasTeamManager()) {
 				// Use new version
 				Team team = TeamManager.getTeamManager().getPlayerTeam(player);
 				if (team != null) {
