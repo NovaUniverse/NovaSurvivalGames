@@ -53,8 +53,26 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 	private boolean disableEarlyBlockBreakCheck;
 
 	private boolean disableDefaultEndSound;
+	private boolean disableBuiltInCountdownSound;
+	private boolean disableActionbar;
 
 	private SurvivalGames game;
+
+	public boolean isDisableActionbar() {
+		return disableActionbar;
+	}
+
+	public boolean isDisableBuiltInCountdownSound() {
+		return disableBuiltInCountdownSound;
+	}
+
+	public void setDisableActionbar(boolean disableActionbar) {
+		this.disableActionbar = disableActionbar;
+	}
+
+	public void setDisableBuiltInCountdownSound(boolean disableBuiltInCountdownSound) {
+		this.disableBuiltInCountdownSound = disableBuiltInCountdownSound;
+	}
 
 	public boolean isAllowReconnect() {
 		return allowReconnect;
@@ -103,6 +121,9 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		saveDefaultConfig();
 
 		boolean disableNovaCoreGameLobby = getConfig().getBoolean("disable_novacore_gamelobby");
+
+		disableActionbar = getConfig().getBoolean("disable_actionbar");
+		disableBuiltInCountdownSound = getConfig().getBoolean("disable_built_in_countdown_sound");
 
 		allowReconnect = getConfig().getBoolean("allow_reconnect");
 		combatTagging = getConfig().getBoolean("combat_tagging");

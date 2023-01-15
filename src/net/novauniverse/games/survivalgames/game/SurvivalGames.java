@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -29,6 +28,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import net.md_5.bungee.api.ChatColor;
 import net.novauniverse.games.survivalgames.NovaSurvivalGames;
 import net.novauniverse.games.survivalgames.event.SurvivalgamesCountdownEvent;
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.ExtendedSpawnLocationConfig;
@@ -453,7 +453,9 @@ public class SurvivalGames extends MapGame implements Listener {
 				Bukkit.getServer().getOnlinePlayers().forEach(player -> {
 					player.setFoodLevel(20);
 					player.setSaturation(20);
-					VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.NOTE_PLING, 1F, 1F);
+					if (!NovaSurvivalGames.getInstance().isDisableBuiltInCountdownSound()) {
+						VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.NOTE_PLING, 1F, 1F);
+					}
 				});
 
 				sendBeginEvent();
@@ -467,8 +469,17 @@ public class SurvivalGames extends MapGame implements Listener {
 				Bukkit.getServer().getPluginManager().callEvent(event);
 
 				Bukkit.getServer().getOnlinePlayers().forEach(player -> {
-					VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.NOTE_PLING, 1F, 1.3F);
-					VersionIndependentUtils.get().sendActionBarMessage(player, LanguageManager.getString(player, "novacore.game.starting_in", timeLeft));
+					if (!NovaSurvivalGames.getInstance().isDisableBuiltInCountdownSound()) {
+						VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.NOTE_PLING, 1F, 1.3F);
+					}
+
+					if (NovaSurvivalGames.getInstance().isDisableActionbar()) {
+						if (timeLeft > 0) {
+							VersionIndependentUtils.getInstance().sendTitle(player, "", ChatColor.AQUA + "Starting in " + timeLeft, 0, 20, 5);
+						}
+					} else {
+						VersionIndependentUtils.get().sendActionBarMessage(player, LanguageManager.getString(player, "novacore.game.starting_in", timeLeft));
+					}
 				});
 				Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Starting in: " + ChatColor.AQUA + ChatColor.BOLD + timeLeft);
 			}
