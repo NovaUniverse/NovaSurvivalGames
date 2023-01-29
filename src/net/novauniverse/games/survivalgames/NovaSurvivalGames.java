@@ -210,7 +210,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		CommandRegistry.registerCommand(new StartSGCountdown());
 
 		Log.info("SurvivalGames", "Loading maps from " + mapFolder.getPath());
-		GameManager.getInstance().readMapsFromFolder(mapFolder, worldFolder);
+		GameManager.getInstance().readMapsFromFolderDelayed(mapFolder, worldFolder);
 
 		new DebugCommands();
 	}
