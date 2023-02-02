@@ -3,6 +3,6 @@
   "language_name": "English",
   "content": {
     "survivalgames.game.starting_in": "§6§lStarting in§b§l %s",
-    "survivalgames.game.starting_in_title": "§6§lStarting"
+    "survivalgames.game.starting_in_title": "§6§lStarting in§b§l %s §6§lseconds"
   }
 }
