@@ -58,9 +58,9 @@ public class SurvivalGames extends MapGame implements Listener {
 	private final boolean randomStartLocation = false;
 	private final int countdownTime = 20;
 
-	private Map<UUID, Location> usedStartLocation;
-	private Map<Team, Location> teamSpawnLocation;
-	private Map<Location, Material> temporaryCageBlocks;
+	private final Map<UUID, Location> usedStartLocation;
+	private final Map<Team, Location> teamSpawnLocation;
+	private final Map<Location, Material> temporaryCageBlocks;
 
 	private boolean countdownOver;
 	private boolean allowDamage;
@@ -438,8 +438,10 @@ public class SurvivalGames extends MapGame implements Listener {
 
 		countdownStarted = true;
 
-		Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Starting in " + countdownTime + " seconds");
-		Bukkit.getServer().getOnlinePlayers().forEach(player -> VersionIndependentUtils.get().sendTitle(player, "", ChatColor.GOLD + "Starting in " + countdownTime + " seconds", 10, 20, 10));
+		Bukkit.getServer().getOnlinePlayers().forEach(player -> {
+			player.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", countdownTime));
+			VersionIndependentUtils.get().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", countdownTime), 10, 20, 10);
+		});
 
 		BasicTimer startTimer = new BasicTimer(countdownTime, 20L);
 		startTimer.addFinishCallback(new Callback() {
@@ -475,13 +477,13 @@ public class SurvivalGames extends MapGame implements Listener {
 
 					if (NovaSurvivalGames.getInstance().isDisableActionbar()) {
 						if (timeLeft > 0) {
-							VersionIndependentUtils.getInstance().sendTitle(player, "", ChatColor.AQUA + "Starting in " + timeLeft, 0, 20, 5);
+							VersionIndependentUtils.getInstance().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", timeLeft), 0, 20, 5);
 						}
 					} else {
-						VersionIndependentUtils.get().sendActionBarMessage(player, LanguageManager.getString(player, "novacore.game.starting_in", timeLeft));
+						VersionIndependentUtils.get().sendActionBarMessage(player, LanguageManager.getString(player, "survivalgames.game.starting_in", timeLeft));
 					}
+					player.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", timeLeft));
 				});
-				Bukkit.getServer().getConsoleSender().sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Starting in: " + ChatColor.AQUA + ChatColor.BOLD + timeLeft);
 			}
 		});
 
