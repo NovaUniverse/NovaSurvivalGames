@@ -439,7 +439,7 @@ public class SurvivalGames extends MapGame implements Listener {
 		countdownStarted = true;
 
 		Bukkit.getServer().getOnlinePlayers().forEach(player -> {
-			player.sendMessage(LanguageManager.getString(player, "novacore.game.starting_in", countdownTime));
+			player.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", countdownTime));
 			VersionIndependentUtils.get().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", countdownTime), 10, 20, 10);
 		});
 
@@ -480,9 +480,9 @@ public class SurvivalGames extends MapGame implements Listener {
 							VersionIndependentUtils.getInstance().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", timeLeft), 0, 20, 5);
 						}
 					} else {
-						VersionIndependentUtils.get().sendActionBarMessage(player, LanguageManager.getString(player, "novacore.game.starting_in", timeLeft));
+						VersionIndependentUtils.get().sendActionBarMessage(player, LanguageManager.getString(player, "survivalgames.game.starting_in", timeLeft));
 					}
-					player.sendMessage(LanguageManager.getString(player, "novacore.game.starting_in", timeLeft));
+					player.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", timeLeft));
 				});
 			}
 		});
