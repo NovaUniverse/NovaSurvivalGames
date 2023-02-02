@@ -3,6 +3,7 @@ package net.novauniverse.games.survivalgames;
 import java.io.File;
 import java.io.IOException;
 
+import net.zeeraa.novacore.spigot.language.LanguageReader;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -171,6 +172,12 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 
 		try {
 			FileUtils.forceMkdir(getDataFolder());
+			Log.info("NovaSurvivalGames", "Loading language files...");
+			try {
+				LanguageReader.readFromJar(this.getClass(), "/lang/en-us.json");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			FileUtils.forceMkdir(mapFolder);
 			FileUtils.forceMkdir(worldFolder);
 			FileUtils.forceMkdir(lootTableFolder);
