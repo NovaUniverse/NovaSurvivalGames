@@ -26,6 +26,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.md_5.bungee.api.ChatColor;
@@ -69,8 +70,8 @@ public class SurvivalGames extends MapGame implements Listener {
 
 	private boolean hasWorldBorder;
 
-	public SurvivalGames() {
-		super(NovaSurvivalGames.getInstance());
+	public SurvivalGames(Plugin plugin) {
+		super(plugin);
 
 		this.started = false;
 		this.ended = false;

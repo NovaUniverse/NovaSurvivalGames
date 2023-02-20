@@ -198,7 +198,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 
 		MapModuleManager.addMapModule("novauniverse.survivalgames.extendedspawnlocation.config", ExtendedSpawnLocationConfig.class);
 
-		this.game = new SurvivalGames();
+		this.game = new SurvivalGames(this);
 
 		GameManager.getInstance().loadGame(game);
 
