@@ -107,11 +107,6 @@ public class SurvivalGames extends MapGame implements Listener {
 	}
 
 	@Override
-	public boolean eliminateIfCombatLogging() {
-		return NovaSurvivalGames.getInstance().isCombatTagging();
-	}
-
-	@Override
 	public boolean eliminatePlayerOnDeath(Player player) {
 		return true;
 	}
