@@ -141,9 +141,9 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		File lootTableFolder = new File(this.getDataFolder().getPath() + File.separator + "LootTables");
 
 		if (NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory() != null) {
-			mapFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + getName() + File.separator + "Maps");
-			worldFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + getName() + File.separator + "Worlds");
-			lootTableFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + getName() + File.separator + "LootTables");
+			mapFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + "SurvivalGames" + File.separator + "Maps");
+			worldFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + "SurvivalGames" + File.separator + "Worlds");
+			lootTableFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + "SurvivalGames" + File.separator + "LootTables");
 		}
 
 		File mapOverrides = new File(this.getDataFolder().getPath() + File.separator + "map_overrides.json");
