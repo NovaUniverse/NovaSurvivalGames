@@ -140,15 +140,32 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		File worldFolder = new File(this.getDataFolder().getPath() + File.separator + "Worlds");
 		File lootTableFolder = new File(this.getDataFolder().getPath() + File.separator + "LootTables");
 
+		String mapDataDirectoryNameOverride = "SurvivalGames";
+
+		File overridesFile = new File(this.getDataFolder().getPath() + File.separator + "overrides.json");
+		if (overridesFile.exists()) {
+			try {
+				JSONObject overrides = JSONFileUtils.readJSONObjectFromFile(overridesFile);
+
+				if (overrides.has("map_data_folder_name")) {
+					mapDataDirectoryNameOverride = overrides.getString("map_data_folder_name");
+					Log.info("SurvivalGames", "Map data folder name override set to: " + mapDataDirectoryNameOverride);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.error("Failed to read overrides from file " + overridesFile.getAbsolutePath());
+			}
+		}
+
 		if (NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory() != null) {
-			mapFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + "SurvivalGames" + File.separator + "Maps");
-			worldFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + "SurvivalGames" + File.separator + "Worlds");
-			lootTableFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + "SurvivalGames" + File.separator + "LootTables");
+			mapFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + mapDataDirectoryNameOverride + File.separator + "Maps");
+			worldFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + mapDataDirectoryNameOverride + File.separator + "Worlds");
+			lootTableFolder = new File(NovaCoreGameEngine.getInstance().getRequestedGameDataDirectory().getAbsolutePath() + File.separator + mapDataDirectoryNameOverride + File.separator + "LootTables");
 		}
 
 		File mapOverrides = new File(this.getDataFolder().getPath() + File.separator + "map_overrides.json");
 		if (mapOverrides.exists()) {
-			Log.info("Trying to read map overrides file");
+			Log.info("SurvivalGames", "Trying to read map overrides file");
 			try {
 				JSONObject mapFiles = JSONFileUtils.readJSONObjectFromFile(mapOverrides);
 
@@ -158,13 +175,13 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 				worldFolder = new File((relative ? this.getDataFolder().getPath() + File.separator : "") + mapFiles.getString("worlds_folder"));
 				lootTableFolder = new File((relative ? this.getDataFolder().getPath() + File.separator : "") + mapFiles.getString("loot_tables_folder"));
 
-				Log.info("New paths:");
-				Log.info("Map folder: " + mapFolder.getAbsolutePath());
-				Log.info("World folder: " + worldFolder.getAbsolutePath());
-				Log.info("Loot table folder:" + lootTableFolder.getAbsolutePath());
+				Log.info("SurvivalGames", "New paths:");
+				Log.info("SurvivalGames", "Map folder: " + mapFolder.getAbsolutePath());
+				Log.info("SurvivalGames", "World folder: " + worldFolder.getAbsolutePath());
+				Log.info("SurvivalGames", "Loot table folder:" + lootTableFolder.getAbsolutePath());
 			} catch (JSONException | IOException e) {
 				e.printStackTrace();
-				Log.error("Failed to read map overrides from file " + mapOverrides.getAbsolutePath());
+				Log.error("SurvivalGames", "Failed to read map overrides from file " + mapOverrides.getAbsolutePath());
 			}
 		}
 
@@ -183,7 +200,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 			FileUtils.forceMkdir(lootTableFolder);
 		} catch (IOException e1) {
 			e1.printStackTrace();
-			Log.fatal("Failed to setup data directory");
+			Log.fatal("SurvivalGames", "Failed to setup data directory");
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
 		}
