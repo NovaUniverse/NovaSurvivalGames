@@ -56,6 +56,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 	private boolean disableDefaultEndSound;
 	private boolean disableBuiltInCountdownSound;
 	private boolean disableActionbar;
+	private boolean disableChatCountdown;
 
 	private SurvivalGames game;
 
@@ -115,6 +116,14 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		this.disableDefaultEndSound = disableDefaultEndSound;
 	}
 
+	public boolean isDisableChatCountdown() {
+		return disableChatCountdown;
+	}
+	
+	public void setDisableChatCountdown(boolean disableChatCountdown) {
+		this.disableChatCountdown = disableChatCountdown;
+	}
+	
 	@Override
 	public void onEnable() {
 		NovaSurvivalGames.instance = this;
@@ -135,6 +144,8 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 		disableEarlyBlockBreakCheck = getConfig().getBoolean("disable_early_block_break_check");
 
 		disableDefaultEndSound = getConfig().getBoolean("disable_default_end_sound");
+		
+		disableChatCountdown = getConfig().getBoolean("disable_chat_countdown");
 
 		File mapFolder = new File(this.getDataFolder().getPath() + File.separator + "Maps");
 		File worldFolder = new File(this.getDataFolder().getPath() + File.separator + "Worlds");

@@ -435,7 +435,9 @@ public class SurvivalGames extends MapGame implements Listener {
 		countdownStarted = true;
 
 		Bukkit.getServer().getOnlinePlayers().forEach(player -> {
-			player.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", countdownTime));
+			if (!NovaSurvivalGames.getInstance().isDisableChatCountdown()) {
+				player.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", countdownTime));
+			}
 			VersionIndependentUtils.get().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", countdownTime), 10, 20, 10);
 		});
 
@@ -478,7 +480,11 @@ public class SurvivalGames extends MapGame implements Listener {
 					} else {
 						VersionIndependentUtils.get().sendActionBarMessage(player, LanguageManager.getString(player, "survivalgames.game.starting_in", timeLeft));
 					}
-					player.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", timeLeft));
+					if (!NovaSurvivalGames.getInstance().isDisableChatCountdown()) {
+						if (timeLeft > 0) {
+							player.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", timeLeft));
+						}
+					}
 				});
 			}
 		});
