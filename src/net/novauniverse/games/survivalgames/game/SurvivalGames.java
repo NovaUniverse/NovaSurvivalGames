@@ -33,7 +33,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.novauniverse.games.survivalgames.NovaSurvivalGames;
 import net.novauniverse.games.survivalgames.event.SurvivalgamesCountdownEvent;
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.ExtendedSpawnLocationConfig;
-import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.IWrapedMaterial;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.timers.TickCallback;
 import net.zeeraa.novacore.commons.utils.Callback;
@@ -51,6 +50,7 @@ import net.zeeraa.novacore.spigot.teams.TeamManager;
 import net.zeeraa.novacore.spigot.timers.BasicTimer;
 import net.zeeraa.novacore.spigot.utils.PlayerUtils;
 import net.zeeraa.novacore.spigot.utils.RandomFireworkEffect;
+import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedMaterial;
 
 public class SurvivalGames extends MapGame implements Listener {
 	private boolean started;
@@ -190,7 +190,7 @@ public class SurvivalGames extends MapGame implements Listener {
 				// Cage floor
 				ExtendedSpawnLocationConfig config = (ExtendedSpawnLocationConfig) this.getActiveMap().getMapData().getMapModule(ExtendedSpawnLocationConfig.class);
 
-				IWrapedMaterial floorMaterial = NovaSurvivalGames.DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL;
+				WrappedMaterial floorMaterial = NovaSurvivalGames.DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL;
 				boolean keepFloor = false;
 				if (config != null) {
 					if (config.isDisabled()) {

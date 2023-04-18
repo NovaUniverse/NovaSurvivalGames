@@ -20,8 +20,6 @@ import net.novauniverse.games.survivalgames.commands.StartSGCountdown;
 import net.novauniverse.games.survivalgames.debug.DebugCommands;
 import net.novauniverse.games.survivalgames.game.SurvivalGames;
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.ExtendedSpawnLocationConfig;
-import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.IWrapedMaterial;
-import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.WrapedMaterial;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.commons.utils.JSONFileUtils;
 import net.zeeraa.novacore.spigot.NovaCore;
@@ -36,9 +34,11 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.GameLobby;
 import net.zeeraa.novacore.spigot.module.ModuleManager;
 import net.zeeraa.novacore.spigot.module.modules.compass.CompassTracker;
 import net.zeeraa.novacore.spigot.module.modules.compass.event.CompassTrackingEvent;
+import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedBukkitMaterial;
+import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedMaterial;
 
 public class NovaSurvivalGames extends JavaPlugin implements Listener {
-	public static final IWrapedMaterial DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL = new WrapedMaterial(Material.BARRIER);
+	public static final WrappedMaterial DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL = new WrappedBukkitMaterial(Material.BARRIER);
 	private static NovaSurvivalGames instance;
 
 	public static NovaSurvivalGames getInstance() {

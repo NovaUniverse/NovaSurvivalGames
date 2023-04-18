@@ -8,9 +8,12 @@ import net.novauniverse.games.survivalgames.NovaSurvivalGames;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
+import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedBukkitMaterial;
+import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedColoredMaterial;
+import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedMaterial;
 
 public class ExtendedSpawnLocationConfig extends MapModule {
-	private IWrapedMaterial floorMaterial;
+	private WrappedMaterial floorMaterial;
 	private boolean keepAfterStart;
 	private boolean disabled;
 
@@ -25,9 +28,9 @@ public class ExtendedSpawnLocationConfig extends MapModule {
 					ColoredBlockType type = ColoredBlockType.valueOf(data[1]);
 					DyeColor color = DyeColor.valueOf(data[2]);
 
-					floorMaterial = new ColoredWrapedMaterial(color, type);
+					floorMaterial = new WrappedColoredMaterial(color, type);
 				} else {
-					floorMaterial = new WrapedMaterial(Material.valueOf(materialString));
+					floorMaterial = new WrappedBukkitMaterial(Material.valueOf(materialString));
 				}
 
 			} catch (Exception e) {
@@ -50,7 +53,7 @@ public class ExtendedSpawnLocationConfig extends MapModule {
 		}
 	}
 
-	public IWrapedMaterial getFloorMaterial() {
+	public WrappedMaterial getFloorMaterial() {
 		return floorMaterial;
 	}
 
