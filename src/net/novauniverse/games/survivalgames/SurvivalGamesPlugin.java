@@ -37,11 +37,11 @@ import net.zeeraa.novacore.spigot.module.modules.compass.event.CompassTrackingEv
 import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedBukkitMaterial;
 import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedMaterial;
 
-public class NovaSurvivalGames extends JavaPlugin implements Listener {
+public class SurvivalGamesPlugin extends JavaPlugin implements Listener {
 	public static final WrappedMaterial DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL = new WrappedBukkitMaterial(Material.BARRIER);
-	private static NovaSurvivalGames instance;
+	private static SurvivalGamesPlugin instance;
 
-	public static NovaSurvivalGames getInstance() {
+	public static SurvivalGamesPlugin getInstance() {
 		return instance;
 	}
 
@@ -126,7 +126,7 @@ public class NovaSurvivalGames extends JavaPlugin implements Listener {
 	
 	@Override
 	public void onEnable() {
-		NovaSurvivalGames.instance = this;
+		SurvivalGamesPlugin.instance = this;
 
 		saveDefaultConfig();
 

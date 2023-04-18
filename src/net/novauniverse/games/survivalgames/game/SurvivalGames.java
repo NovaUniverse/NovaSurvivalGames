@@ -30,7 +30,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.md_5.bungee.api.ChatColor;
-import net.novauniverse.games.survivalgames.NovaSurvivalGames;
+import net.novauniverse.games.survivalgames.SurvivalGamesPlugin;
 import net.novauniverse.games.survivalgames.event.SurvivalgamesCountdownEvent;
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocationconfig.ExtendedSpawnLocationConfig;
 import net.zeeraa.novacore.commons.log.Log;
@@ -99,12 +99,12 @@ public class SurvivalGames extends MapGame implements Listener {
 
 	@Override
 	public PlayerQuitEliminationAction getPlayerQuitEliminationAction() {
-		return NovaSurvivalGames.getInstance().isAllowReconnect() ? PlayerQuitEliminationAction.DELAYED : PlayerQuitEliminationAction.INSTANT;
+		return SurvivalGamesPlugin.getInstance().isAllowReconnect() ? PlayerQuitEliminationAction.DELAYED : PlayerQuitEliminationAction.INSTANT;
 	}
 
 	@Override
 	public int getPlayerEliminationDelay() {
-		return NovaSurvivalGames.getInstance().getReconnectTime();
+		return SurvivalGamesPlugin.getInstance().getReconnectTime();
 	}
 
 	@Override
@@ -165,7 +165,7 @@ public class SurvivalGames extends MapGame implements Listener {
 	public void setStartCage(Location location, boolean state) {
 		Material cageMaterial = state ? Material.BARRIER : Material.AIR;
 
-		if (NovaSurvivalGames.getInstance().isUseExtendedSpawnLocations()) {
+		if (SurvivalGamesPlugin.getInstance().isUseExtendedSpawnLocations()) {
 			// Box
 			for (int x = -2; x < 3; x++) {
 				for (int y = 0; y < 4; y++) {
@@ -190,7 +190,7 @@ public class SurvivalGames extends MapGame implements Listener {
 				// Cage floor
 				ExtendedSpawnLocationConfig config = (ExtendedSpawnLocationConfig) this.getActiveMap().getMapData().getMapModule(ExtendedSpawnLocationConfig.class);
 
-				WrappedMaterial floorMaterial = NovaSurvivalGames.DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL;
+				WrappedMaterial floorMaterial = SurvivalGamesPlugin.DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL;
 				boolean keepFloor = false;
 				if (config != null) {
 					if (config.isDisabled()) {
@@ -244,7 +244,7 @@ public class SurvivalGames extends MapGame implements Listener {
 
 	public void tpToArena(Player player) {
 		if (hasActiveMap()) {
-			if (NovaSurvivalGames.getInstance().isUseExtendedSpawnLocations() && NovaCore.getInstance().hasTeamManager()) {
+			if (SurvivalGamesPlugin.getInstance().isUseExtendedSpawnLocations() && NovaCore.getInstance().hasTeamManager()) {
 				// Use new version
 				Team team = TeamManager.getTeamManager().getPlayerTeam(player);
 				if (team != null) {
@@ -333,7 +333,7 @@ public class SurvivalGames extends MapGame implements Listener {
 			PlayerUtils.clearPlayerInventory(player);
 			PlayerUtils.resetPlayerXP(player);
 			player.setGameMode(GameMode.SPECTATOR);
-			if (!NovaSurvivalGames.getInstance().isDisableDefaultEndSound()) {
+			if (!SurvivalGamesPlugin.getInstance().isDisableDefaultEndSound()) {
 				VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.WITHER_DEATH, 1F, 1F);
 			}
 		});
@@ -363,7 +363,7 @@ public class SurvivalGames extends MapGame implements Listener {
 		getActiveMap().getWorld().setGameRuleValue("doMobSpawning", "false");
 		getActiveMap().getWorld().setDifficulty(Difficulty.PEACEFUL);
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(NovaSurvivalGames.getInstance(), new Runnable() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(SurvivalGamesPlugin.getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				getActiveMap().getWorld().setDifficulty(Difficulty.NORMAL);
@@ -402,7 +402,7 @@ public class SurvivalGames extends MapGame implements Listener {
 
 		this.started = true;
 
-		if (NovaSurvivalGames.getInstance().isAutoStartCountdown()) {
+		if (SurvivalGamesPlugin.getInstance().isAutoStartCountdown()) {
 			startCountdown();
 		} else {
 			Bukkit.getServer().broadcastMessage(ChatColor.GOLD + "" + ChatColor.BOLD + "Waiting for admins to start the countdown");
@@ -435,7 +435,7 @@ public class SurvivalGames extends MapGame implements Listener {
 		countdownStarted = true;
 
 		Bukkit.getServer().getOnlinePlayers().forEach(player -> {
-			if (!NovaSurvivalGames.getInstance().isDisableChatCountdown()) {
+			if (!SurvivalGamesPlugin.getInstance().isDisableChatCountdown()) {
 				player.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", countdownTime));
 			}
 			VersionIndependentUtils.get().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", countdownTime), 10, 20, 10);
@@ -453,7 +453,7 @@ public class SurvivalGames extends MapGame implements Listener {
 				Bukkit.getServer().getOnlinePlayers().forEach(player -> {
 					player.setFoodLevel(20);
 					player.setSaturation(20);
-					if (!NovaSurvivalGames.getInstance().isDisableBuiltInCountdownSound()) {
+					if (!SurvivalGamesPlugin.getInstance().isDisableBuiltInCountdownSound()) {
 						VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.NOTE_PLING, 1F, 1F);
 					}
 				});
@@ -469,18 +469,18 @@ public class SurvivalGames extends MapGame implements Listener {
 				Bukkit.getServer().getPluginManager().callEvent(event);
 
 				Bukkit.getServer().getOnlinePlayers().forEach(player -> {
-					if (!NovaSurvivalGames.getInstance().isDisableBuiltInCountdownSound()) {
+					if (!SurvivalGamesPlugin.getInstance().isDisableBuiltInCountdownSound()) {
 						VersionIndependentUtils.get().playSound(player, player.getLocation(), VersionIndependentSound.NOTE_PLING, 1F, 1.3F);
 					}
 
-					if (NovaSurvivalGames.getInstance().isDisableActionbar()) {
+					if (SurvivalGamesPlugin.getInstance().isDisableActionbar()) {
 						if (timeLeft > 0) {
 							VersionIndependentUtils.getInstance().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", timeLeft), 0, 20, 5);
 						}
 					} else {
 						VersionIndependentUtils.get().sendActionBarMessage(player, LanguageManager.getString(player, "survivalgames.game.starting_in", timeLeft));
 					}
-					if (!NovaSurvivalGames.getInstance().isDisableChatCountdown()) {
+					if (!SurvivalGamesPlugin.getInstance().isDisableChatCountdown()) {
 						if (timeLeft > 0) {
 							player.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", timeLeft));
 						}
@@ -530,7 +530,7 @@ public class SurvivalGames extends MapGame implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent e) {
-		if (NovaSurvivalGames.getInstance().isDisableEarlyBlockBreakCheck()) {
+		if (SurvivalGamesPlugin.getInstance().isDisableEarlyBlockBreakCheck()) {
 			return;
 		}
 
@@ -543,7 +543,7 @@ public class SurvivalGames extends MapGame implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent e) {
-		if (NovaSurvivalGames.getInstance().isDisableEarlyBlockBreakCheck()) {
+		if (SurvivalGamesPlugin.getInstance().isDisableEarlyBlockBreakCheck()) {
 			return;
 		}
 

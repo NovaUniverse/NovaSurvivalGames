@@ -4,7 +4,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.json.JSONObject;
 
-import net.novauniverse.games.survivalgames.NovaSurvivalGames;
+import net.novauniverse.games.survivalgames.SurvivalGamesPlugin;
 import net.zeeraa.novacore.commons.log.Log;
 import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType;
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModule;
@@ -37,7 +37,7 @@ public class ExtendedSpawnLocationConfig extends MapModule {
 				Log.error("ExtendedSpawnLocationConfig", "Failed to parse material " + materialString + ". " + e.getClass().getName() + " " + e.getMessage());
 			}
 		} else {
-			floorMaterial = NovaSurvivalGames.DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL;
+			floorMaterial = SurvivalGamesPlugin.DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL;
 		}
 
 		if (json.has("keep_after_start")) {
