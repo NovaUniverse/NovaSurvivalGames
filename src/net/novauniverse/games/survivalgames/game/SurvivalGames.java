@@ -25,6 +25,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -419,6 +420,8 @@ public class SurvivalGames extends MapGame implements Listener {
 				}
 			}.runTaskLater(getPlugin(), 20L);
 		}
+		
+		Bukkit.getOnlinePlayers().forEach(p -> p.setBedSpawnLocation(getActiveMap().getSpectatorLocation(), true));
 
 		getWorld().setGameRuleValue("announceAdvancements", "false");
 	}
@@ -507,6 +510,13 @@ public class SurvivalGames extends MapGame implements Listener {
 			if (!allowDamage) {
 				e.setCancelled(true);
 			}
+		}
+	}
+
+	@Override
+	public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
+		if (hasActiveMap()) {
+			event.setRespawnLocation(getActiveMap().getSpectatorLocation());
 		}
 	}
 
