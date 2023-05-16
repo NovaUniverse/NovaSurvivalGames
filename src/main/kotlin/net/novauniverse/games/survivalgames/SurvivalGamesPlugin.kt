@@ -68,9 +68,9 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
         var lootTableFolder = File(dataFolder.path + File.separator + "LootTables")
 
         if (NovaCoreGameEngine.getInstance().requestedGameDataDirectory != null) {
-            mapFolder = File(NovaCoreGameEngine.getInstance().requestedGameDataDirectory.absolutePath + File.separator + mapDataDirectoryNameOverride + File.separator + "Maps");
-            worldFolder = File(NovaCoreGameEngine.getInstance().requestedGameDataDirectory.absolutePath + File.separator + mapDataDirectoryNameOverride + File.separator + "Worlds");
-            lootTableFolder = File(NovaCoreGameEngine.getInstance().requestedGameDataDirectory.absolutePath + File.separator + mapDataDirectoryNameOverride + File.separator + "LootTables");
+            mapFolder = File(NovaCoreGameEngine.getInstance().requestedGameDataDirectory.absolutePath + File.separator + mapDataDirectoryNameOverride + File.separator + "Maps")
+            worldFolder = File(NovaCoreGameEngine.getInstance().requestedGameDataDirectory.absolutePath + File.separator + mapDataDirectoryNameOverride + File.separator + "Worlds")
+            lootTableFolder = File(NovaCoreGameEngine.getInstance().requestedGameDataDirectory.absolutePath + File.separator + mapDataDirectoryNameOverride + File.separator + "LootTables")
         }
 
         Log.info("NovaSurvivalGames", "Loading language files...")

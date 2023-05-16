@@ -15,9 +15,11 @@ class ExtendedSpawnLocationConfig(json: JSONObject) : MapModule(json) {
     var floorMaterial: WrappedMaterial? = null
         private set
 
+    @get:JvmName("isKeepAfterStart")
     var keepAfterStart: Boolean = json.optBoolean("keep_after_start", false)
         private set
 
+    @get:JvmName("isDisabled")
     var disabled: Boolean = json.optBoolean("disabled", false)
         private set
 

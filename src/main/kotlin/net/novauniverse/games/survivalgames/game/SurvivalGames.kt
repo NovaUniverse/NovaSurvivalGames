@@ -27,31 +27,41 @@ import org.bukkit.entity.Firework
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
+import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerRespawnEvent
 import java.util.*
 import java.util.function.Consumer
 
 
-class SurvivalGames(val plugin: SurvivalGamesPlugin) : MapGame(plugin) {
-    var started = false
-        private set
+class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesPlugin) : MapGame(plugin), Listener {
+    private var started = false
 
-    var ended = false
-        private set
+    private var ended = false
 
     private val usedStartLocation: HashMap<UUID, Location> = HashMap()
     private val teamSpawnLocation: HashMap<Team, Location> = HashMap()
     private val temporaryCageBlocks: HashMap<Location, Material> = HashMap()
 
+    @get:JvmName("getCountdownTime")
     var countdownTime: Int = 20
         private set
 
+    @get:JvmName("isCountdownOver")
     var countdownOver = false
         private set
     private var allowDamage = false
 
+    @get:JvmName("isCountdownStarted")
     var countdownStarted = false
         private set
 
+    @get:JvmName("isHasWorldBorder")
     var hasWorldBorder = false
         private set
 
@@ -108,6 +118,7 @@ class SurvivalGames(val plugin: SurvivalGamesPlugin) : MapGame(plugin) {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     fun tpToArena(player: Player) {
         if (hasActiveMap()) {
             if (plugin.survivalGamesConfig!!.useExtendedSpawnLocations && TeamManager.hasTeamManager()) {
@@ -158,6 +169,7 @@ class SurvivalGames(val plugin: SurvivalGamesPlugin) : MapGame(plugin) {
      * @param player   [Player] to teleport
      * @param location [Location] to teleport the player to
      */
+    @SuppressWarnings("WeakerAccess")
     fun tpToArena(player: Player, location: Location) {
         player.teleport(location.world.spawnLocation)
         usedStartLocation[player.uniqueId] = location
@@ -257,6 +269,7 @@ class SurvivalGames(val plugin: SurvivalGamesPlugin) : MapGame(plugin) {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     fun startCountdown(): Boolean {
         if (!started) {
             return false
@@ -316,6 +329,7 @@ class SurvivalGames(val plugin: SurvivalGamesPlugin) : MapGame(plugin) {
         return true
     }
 
+    @SuppressWarnings("WeakerAccess")
     fun setStartCage(location: Location, active: Boolean) {
         val cageMaterial = if (active) Material.BARRIER else Material.AIR
         if (plugin.survivalGamesConfig!!.useExtendedSpawnLocations) {
@@ -394,5 +408,58 @@ class SurvivalGames(val plugin: SurvivalGamesPlugin) : MapGame(plugin) {
         activeMap.starterLocations.forEach(Consumer<Location> { location: Location -> setStartCage(location, active) })
 
         return true
+    }
+
+    override fun onPlayerRespawnEvent(event: PlayerRespawnEvent) {
+        if (hasActiveMap()) {
+            event.respawnLocation = activeMap.spectatorLocation
+        }
+    }
+
+    override fun onPlayerRespawn(player: Player) {
+        Bukkit.getScheduler().scheduleSyncDelayedTask(NovaCore.getInstance(), {
+            Log.trace(name, "Calling tpToSpectator(" + player.name + ")")
+            tpToSpectator(player)
+        }, 5L)
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    fun onEntityDamage(e: EntityDamageEvent) {
+        if (e.entity is Player) {
+            if (!allowDamage) {
+                e.isCancelled = true
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    fun onPlayerJoin(e: PlayerJoinEvent) {
+        if (!hasStarted()) {
+            PlayerUtils.clearPotionEffects(e.player)
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    fun onBlockBreak(e: BlockBreakEvent) {
+        if (plugin.survivalGamesConfig!!.disableEarlyBlockBreakCheck) {
+            return
+        }
+        if (!countdownOver) {
+            if (e.player.gameMode != GameMode.CREATIVE) {
+                e.isCancelled = true
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    fun onBlockPlace(e: BlockPlaceEvent) {
+        if (plugin.survivalGamesConfig!!.disableEarlyBlockBreakCheck) {
+            return
+        }
+        if (!countdownOver) {
+            if (e.player.gameMode != GameMode.CREATIVE) {
+                e.isCancelled = true
+            }
+        }
     }
 }
