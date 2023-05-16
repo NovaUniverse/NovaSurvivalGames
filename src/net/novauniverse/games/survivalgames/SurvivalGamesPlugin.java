@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import net.zeeraa.novacore.spigot.language.LanguageReader;
 import org.apache.commons.io.FileUtils;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -129,6 +130,8 @@ public class SurvivalGamesPlugin extends JavaPlugin implements Listener {
 		SurvivalGamesPlugin.instance = this;
 
 		saveDefaultConfig();
+		
+		new Metrics(this, 18495);
 
 		boolean disableNovaCoreGameLobby = getConfig().getBoolean("disable_novacore_gamelobby");
 

@@ -65,6 +65,14 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<relocations>
+						<relocation>
+							<pattern>org.bstats</pattern>
+							<shadedPattern>net.novauniverse.games.survivalgames.shaded.org.bstats</shadedPattern>
+						</relocation>
+					</relocations>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -141,6 +149,13 @@
 			<artifactId>json</artifactId>
 			<version>20200518</version>
 			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.bstats</groupId>
+			<artifactId>bstats-bukkit</artifactId>
+			<version>3.0.2</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
