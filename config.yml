@@ -1,24 +1,22 @@
-allow_reconnect: true
+AllowReconnect: true
 
-combat_tagging: true
+CombatTagging: true
 
-player_elimination_delay: 180
+PlayerEliminationDelay: 180
 
 # This requires the team manager to be enabled
-extended_spawn_location: true
-
-auto_start_countdown: true
+ExtendedSpawnLocations: true
 
 # Set to true for legacy version where you can destroy blocks before the game starts
-disable_early_block_break_check: false
+DisableEarlyBlockBreakCheck: false
 
 # Set to true to not use the default game lobby
-disable_novacore_gamelobby: false
+DontUseGameLobby: false
 
 # Set to true to not play the wither death sound on end
-disable_default_end_sound: false
+DisableDefaultEndSound: false
 
 
-disable_built_in_countdown_sound: false
-disable_actionbar: false
-disable_chat_countdown: false
+DisableBuiltInCountdownSound: false
+DisableActionBar: false
+DisableChatCountdown: false
