@@ -43,9 +43,8 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
 
     override fun onEnable() {
         saveDefaultConfig()
-
+        instance = this
         Metrics(this, 18495)
-
         survivalGamesConfig = SurvivalGamesConfig(config)
 
         var mapDataDirectoryNameOverride = "SurvivalGames"
@@ -148,13 +147,13 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
     }
 
     companion object {
-        private var gameInstance: SurvivalGamesPlugin? = null
+        private var instance: SurvivalGamesPlugin? = null
 
         val DEFAULT_EXTENDED_SPAWN_FLOOR_MATERIAL: WrappedMaterial = WrappedBukkitMaterial(Material.BARRIER)
 
         @JvmStatic
         fun getInstance(): SurvivalGamesPlugin {
-            return gameInstance!!
+            return instance!!
         }
     }
 }
