@@ -189,6 +189,10 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
             return
         }
 
+        Bukkit.getServer().worlds.forEach {
+            it.isAutoSave = false
+        }
+
         world.isAutoSave = false
 
         this.isDropItemsOnCombatLog = true
@@ -202,6 +206,11 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
                 PlayerUtils.clearPlayerInventory(player)
                 tpToSpectator(player)
             }
+        }
+
+        if (plugin.survivalGamesConfig!!.shuffleSpawnLocations) {
+            activeMap.mapData.starterLocations.shuffle(random)
+            activeMap.starterLocations.shuffle(random)
         }
 
         activeMap.world.setGameRuleValue("doMobSpawning", "false")
@@ -274,9 +283,11 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
         if (!started) {
             return false
         }
+
         if (countdownStarted) {
             return false
         }
+
         countdownStarted = true
         Bukkit.getServer().onlinePlayers.forEach { player: Player ->
             if (!plugin.survivalGamesConfig!!.disableChatCountdown) {
@@ -284,6 +295,7 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
             }
             VersionIndependentUtils.get().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", countdownTime), 10, 20, 10)
         }
+
         val startTimer = BasicTimer(countdownTime.toLong(), 20L)
         startTimer.addFinishCallback {
             countdownOver = true
@@ -320,6 +332,7 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
             }
         }
         startTimer.start()
+
         if (hasWorldBorder) {
             val trigger = getTrigger("novacore.worldborder.start")
             if (trigger != null) {

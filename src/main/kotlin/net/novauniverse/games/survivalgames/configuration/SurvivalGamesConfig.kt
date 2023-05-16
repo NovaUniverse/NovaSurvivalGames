@@ -6,7 +6,7 @@ class SurvivalGamesConfig(configFile: FileConfiguration) {
     @get:JvmName("isAllowReconnect")
     var allowReconnect = configFile.getBoolean("AllowReconnect")
 
-    @get:JvmName("isUsecombatTaggings")
+    @get:JvmName("isUseCombatTagging")
     val combatTagging = configFile.getBoolean("CombatTagging")
     val playerEliminationDelay = configFile.getInt("PlayerEliminationDelay")
 
@@ -30,4 +30,7 @@ class SurvivalGamesConfig(configFile: FileConfiguration) {
 
     @get:JvmName("isDisableChatCountdown")
     var disableChatCountdown = configFile.getBoolean("DisableChatCountdown")
+
+    @get:JvmName("isShuffleSpawnLocations")
+    var shuffleSpawnLocations = configFile.getBoolean("ShuffleSpawnLocations")
 }

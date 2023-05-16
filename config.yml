@@ -20,3 +20,5 @@ DisableDefaultEndSound: false
 DisableBuiltInCountdownSound: false
 DisableActionBar: false
 DisableChatCountdown: false
+
+ShuffleSpawnLocations: false
