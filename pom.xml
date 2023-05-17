@@ -3,18 +3,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>NovaSurvivalGames</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<groupId>net.novauniverse</groupId>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<maven-compiler-plugin-version>3.8.0</maven-compiler-plugin-version>
-		<maven-shade-plugin-version>3.2.4</maven-shade-plugin-version>
-		<maven-source-plugin-version>3.2.0</maven-source-plugin-version>
-		<maven-javadoc-plugin-version>3.2.0</maven-javadoc-plugin-version>
-		<maven-deploy-plugin-version>3.0.0-M1</maven-deploy-plugin-version>
+		<kotlin.version>1.8.21</kotlin.version>
 	</properties>
 
 	<distributionManagement>
@@ -42,21 +38,76 @@
 			</resource>
 		</resources>
 
-		<sourceDirectory>src</sourceDirectory>
+		<sourceDirectory>src/main/kotlin</sourceDirectory>
+
 		<plugins>
 			<plugin>
+				<artifactId>kotlin-maven-plugin</artifactId>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<version>${kotlin.version}</version>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<sourceDirs>
+								<sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+							</sourceDirs>
+						</configuration>
+					</execution>
+					<execution>
+						<id>test-compile</id>
+						<goals>
+							<goal>test-compile</goal>
+						</goals>
+						<configuration>
+							<sourceDirs>
+								<sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+							</sourceDirs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin-version}</version>
+				<version>3.11.0</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>default-testCompile</id>
+						<phase>none</phase>
+					</execution>
+					<execution>
+						<id>java-compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>java-test-compile</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>${maven-shade-plugin-version}</version>
+				<version>3.4.1</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -65,11 +116,17 @@
 						</goals>
 					</execution>
 				</executions>
+
 				<configuration>
 					<relocations>
 						<relocation>
 							<pattern>org.bstats</pattern>
-							<shadedPattern>net.novauniverse.games.survivalgames.shaded.org.bstats</shadedPattern>
+							<shadedPattern>net.novauniverse.games.survivalgames.lib.org.bstats</shadedPattern>
+						</relocation>
+
+						<relocation>
+							<pattern>kotlin</pattern>
+							<shadedPattern>net.novauniverse.games.survivalgames.lib.kotlin</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
@@ -77,7 +134,7 @@
 
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>${maven-source-plugin-version}</version>
+				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -90,7 +147,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin-version}</version>
+				<version>3.5.0</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -100,12 +157,14 @@
 						</goals>
 					</execution>
 				</executions>
+
+				<configuration>
+					<excludePackageNames>net.novauniverse.games.survivalgames.lib.*</excludePackageNames>
+				</configuration>
 			</plugin>
 			<plugin>
-				<!-- explicitly define maven-deploy-plugin after other to force exec 
-					order -->
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>${maven-deploy-plugin-version}</version>
+				<version>3.1.1</version>
 				<executions>
 					<execution>
 						<id>deploy</id>
@@ -134,7 +193,21 @@
 			<version>1.8.8-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
+		<!-- Kotlin -->
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib</artifactId>
+			<version>${kotlin.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-test-junit</artifactId>
+			<version>${kotlin.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
 			<groupId>commons-io</groupId>
