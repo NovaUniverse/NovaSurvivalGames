@@ -5,12 +5,17 @@ import net.novauniverse.games.survivalgames.debug.DebugCommands
 import net.novauniverse.games.survivalgames.game.SurvivalGames
 import net.novauniverse.games.survivalgames.map.mapmodules.countdown.SurvivalGamesCountdownConfig
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocation.ExtendedSpawnLocationConfig
+import net.novauniverse.games.survivalgames.modifier.Modifier
+import net.novauniverse.games.survivalgames.modifier.ModifierGUI
+import net.novauniverse.games.survivalgames.modifier.modifiers.SingleHeart
+import net.novauniverse.games.survivalgames.modifier.modifiers.TNTMadness
 import net.zeeraa.novacore.commons.log.Log
 import net.zeeraa.novacore.commons.utils.JSONFileUtils
 import net.zeeraa.novacore.spigot.NovaCore
 import net.zeeraa.novacore.spigot.abstraction.events.VersionIndependentPlayerAchievementAwardedEvent
 import net.zeeraa.novacore.spigot.gameengine.NovaCoreGameEngine
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PreGameStartEvent
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModuleManager
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.mapselector.selectors.RandomMapSelector
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.mapselector.selectors.guivoteselector.GUIMapVote
@@ -120,6 +125,10 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
         Log.info(name, "Scheduled loading maps from " + mapFolder.path)
         GameManager.getInstance().readMapsFromFolderDelayed(mapFolder, worldFolder)
 
+        game!!.loadModifier(TNTMadness::class.java)
+        game!!.loadModifier(SingleHeart::class.java)
+
+
         DebugCommands()
     }
 
@@ -144,6 +153,11 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     fun onTheLongBoi(e: VersionIndependentPlayerAchievementAwardedEvent) {
         e.isCancelled = true
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    fun onPreGameStartEvent(e: PreGameStartEvent) {
+        ModifierGUI.SelectedModifiers.stream().forEach(Modifier::enable)
     }
 
     companion object {

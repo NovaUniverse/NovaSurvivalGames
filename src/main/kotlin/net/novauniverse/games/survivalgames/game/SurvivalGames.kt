@@ -1,10 +1,12 @@
 package net.novauniverse.games.survivalgames.game
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import net.novauniverse.games.survivalgames.SurvivalGamesPlugin
 import net.novauniverse.games.survivalgames.SurvivalGamesPlugin.Companion.getInstance
 import net.novauniverse.games.survivalgames.event.SurvivalgamesCountdownEvent
 import net.novauniverse.games.survivalgames.map.mapmodules.countdown.SurvivalGamesCountdownConfig
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocation.ExtendedSpawnLocationConfig
+import net.novauniverse.games.survivalgames.modifier.Modifier
 import net.zeeraa.novacore.commons.log.Log
 import net.zeeraa.novacore.spigot.NovaCore
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils
@@ -47,6 +49,8 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
     private val usedStartLocation: HashMap<UUID, Location> = HashMap()
     private val teamSpawnLocation: HashMap<Team, Location> = HashMap()
     private val temporaryCageBlocks: HashMap<Location, Material> = HashMap()
+
+    val modifiers: ArrayList<Modifier> = ArrayList()
 
     @get:JvmName("getCountdownTime")
     var countdownTime: Int = 20
@@ -208,6 +212,8 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
             }
         }
 
+        Bukkit.getServer().onlinePlayers.forEach { PlayerUtils.setMaxHealth(it, 20.0) }
+
         if (plugin.survivalGamesConfig!!.shuffleSpawnLocations) {
             activeMap.mapData.starterLocations.shuffle(random)
             activeMap.starterLocations.shuffle(random)
@@ -250,6 +256,23 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
         Bukkit.getOnlinePlayers().forEach { p: Player -> p.setBedSpawnLocation(activeMap.spectatorLocation, true) }
 
         getWorld().setGameRuleValue("announceAdvancements", "false")
+
+        modifiers.stream().filter (Modifier::enabled).forEach(Modifier::onGameStart)
+
+        val modifierCount = modifiers.stream().filter(Modifier::enabled).count().toInt()
+        if(modifierCount > 0) {
+            if(modifierCount == 1) {
+                val singleMod = modifiers.stream().filter(Modifier::enabled).findFirst().get()
+                VersionIndependentUtils.get().broadcastTitle("${ChatColor.GOLD}Active Modifier", ChatColor.AQUA.toString() + singleMod.getDisplayName(), 0, 60, 20)
+            } else {
+                VersionIndependentUtils.get().broadcastTitle("${ChatColor.GOLD}Multiple Modifiers", "", 0, 60, 20)
+            }
+
+            modifiers.stream().filter(Modifier::enabled).forEach {
+                Bukkit.getServer().broadcastMessage("${ChatColor.GOLD.toString() + ChatColor.BOLD.toString()}Active modifier: ${ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + it.getDisplayName()}")
+                Bukkit.getServer().broadcastMessage(ChatColor.WHITE.toString() + it.getShortDescription())
+            }
+        }
     }
 
     override fun onEnd(reason: GameEndReason?) {
@@ -276,6 +299,22 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
                 VersionIndependentUtils.get().playSound(player, player.location, VersionIndependentSound.WITHER_DEATH, 1F, 1F)
             }
         }
+
+        modifiers.stream().filter (Modifier::enabled).forEach(Modifier::onGameEnd)
+    }
+
+    fun loadModifier(c: Class<out Modifier?>): Boolean {
+        if(modifiers.stream().anyMatch { it.javaClass.name.equals(c.javaClass.name, true) }) {
+            return false
+        }
+
+        val mod: Modifier = c.newInstance()!!
+        mod.onLoad()
+        modifiers.add(mod)
+
+        Log.debug("SurvivalGames", "Added modifier ${mod.name} to available modifiers")
+
+        return true
     }
 
     @SuppressWarnings("WeakerAccess")
