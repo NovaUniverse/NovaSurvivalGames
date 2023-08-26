@@ -13,6 +13,7 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameEndReason
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.MapGame
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.PlayerQuitEliminationAction
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.graceperiod.graceperiod.event.GracePeriodBeginEvent
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.DelayedGameTrigger
 import net.zeeraa.novacore.spigot.language.LanguageManager
 import net.zeeraa.novacore.spigot.teams.Team
@@ -500,6 +501,11 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
                 e.isCancelled = true
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    fun onGracePeriodBegin(e: GracePeriodBeginEvent) {
+        Log.info("SurvivalGames", e.javaClass.name)
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

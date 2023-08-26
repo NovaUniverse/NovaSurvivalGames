@@ -46,14 +46,19 @@ abstract class Modifier(val name: String) : Listener {
             return
         }
 
+        Log.debug("Modifier", "Enabling modifier ${this.getDisplayName()}")
+
         enabled = true
         Bukkit.getServer().pluginManager.registerEvents(this, SurvivalGamesPlugin.getInstance())
+        this.onEnable()
     }
 
     /**
      * Called when the modifier is loaded initially
      */
     open fun onLoad() {}
+
+    open fun onEnable() {}
 
     /**
      * Called if the modifier is enabled in the game start function

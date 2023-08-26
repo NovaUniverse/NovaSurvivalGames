@@ -15,7 +15,7 @@ class SingleHeart : Modifier("SingleHeart") {
     }
 
     override fun getIconMaterial(): Material {
-        return Material.REDSTONE;
+        return Material.REDSTONE
     }
 
     override fun getShortDescription(): String {
@@ -28,7 +28,8 @@ class SingleHeart : Modifier("SingleHeart") {
 
     @EventHandler(priority = EventPriority.NORMAL)
     fun onGracePeriodBegin(e: GracePeriodBeginEvent) {
-        val gracePeriodTime = 60 * 3;
+        Log.trace("SingleHeart", e.javaClass.name)
+        val gracePeriodTime = 60 * 3
         if (e.time < gracePeriodTime) {
             e.time = gracePeriodTime // Increase grace period to 3 minutes if it's less than 3 minutes
             Log.info("SingleHeart", "Increased grace period to $gracePeriodTime seconds")

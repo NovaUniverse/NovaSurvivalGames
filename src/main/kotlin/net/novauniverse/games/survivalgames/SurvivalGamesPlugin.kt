@@ -1,5 +1,6 @@
 package net.novauniverse.games.survivalgames
 
+import net.novauniverse.games.survivalgames.commands.modifier.ModifierCommand
 import net.novauniverse.games.survivalgames.configuration.SurvivalGamesConfig
 import net.novauniverse.games.survivalgames.debug.DebugCommands
 import net.novauniverse.games.survivalgames.game.SurvivalGames
@@ -14,6 +15,7 @@ import net.zeeraa.novacore.commons.log.Log
 import net.zeeraa.novacore.commons.utils.JSONFileUtils
 import net.zeeraa.novacore.spigot.NovaCore
 import net.zeeraa.novacore.spigot.abstraction.events.VersionIndependentPlayerAchievementAwardedEvent
+import net.zeeraa.novacore.spigot.command.CommandRegistry
 import net.zeeraa.novacore.spigot.gameengine.NovaCoreGameEngine
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PreGameStartEvent
@@ -115,6 +117,8 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
             e.printStackTrace()
             Log.error("SurvivalGames", "Failed to load custom items. $e.javaClass.name $e.message}")
         }
+
+        CommandRegistry.registerCommand(ModifierCommand(this))
 
         game = SurvivalGames(this)
 

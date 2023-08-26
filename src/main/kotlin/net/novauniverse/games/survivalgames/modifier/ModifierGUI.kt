@@ -28,7 +28,8 @@ class ModifierGUI {
 
             val background = ItemBuilder(ColoredBlockType.GLASS_PANE, DyeColor.WHITE)
             background.setName(" ");
-            for(i in 0..inventory.size) {
+            background.setAmount(1)
+            for(i in 0 until inventory.size) {
                 inventory.setItem(i, background.build())
             }
 
@@ -46,10 +47,10 @@ class ModifierGUI {
                 holder.addClickCallback(index.get()) { _, _, _, _, _, _ ->
                     if (SelectedModifiers.contains(modifier)) {
                         SelectedModifiers.remove(modifier)
-                        Bukkit.broadcast("${ChatColor.RED}$player.name disabled modifier ${modifier.getDisplayName()}",  "survivalgames.modifier.select")
+                        Bukkit.broadcast("${ChatColor.RED}${player.name} disabled modifier ${modifier.getDisplayName()}",  "survivalgames.modifier.select")
                     } else {
                         SelectedModifiers.add(modifier)
-                        Bukkit.broadcast("${ChatColor.GREEN}$player.name enabled modifier ${modifier.getDisplayName()}",  "survivalgames.modifier.select")
+                        Bukkit.broadcast("${ChatColor.GREEN}${player.name} enabled modifier ${modifier.getDisplayName()}",  "survivalgames.modifier.select")
                     }
                     VersionIndependentSound.NOTE_PLING.play(player)
                     openModifierGUI(player)
