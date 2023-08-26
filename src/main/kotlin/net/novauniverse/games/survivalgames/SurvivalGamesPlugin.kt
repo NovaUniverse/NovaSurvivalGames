@@ -174,11 +174,8 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     fun onPlayerJoinGameLobby(e: PlayerJoinGameLobbyEvent) {
-        Log.trace("Player in lobby")
         if (e.player.hasPermission("survivalgames.modifier.select")) {
-            Log.trace("Has permission")
             if (GameManager.getInstance().hasGame()) {
-                Log.trace("Game loaded")
                 if (!GameManager.getInstance().activeGame.hasStarted()) {
                     Log.debug("SurvivalGames", "Giving modifier selector to ${e.player.name}")
                     e.player.inventory.setItem(1, CustomItemManager.getInstance().getCustomItemStack(ModifierSelectorItem::class.java, e.player))
