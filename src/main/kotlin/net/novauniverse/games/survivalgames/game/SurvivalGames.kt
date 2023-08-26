@@ -115,7 +115,7 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
 
     override fun tpToSpectator(player: Player) {
         PlayerUtils.resetMaxHealth(player)
-        player.health = 20.0
+        PlayerUtils.fullyHealPlayer(player)
         player.gameMode = GameMode.SPECTATOR
         if (hasActiveMap()) {
             player.teleport(activeMap.spectatorLocation)
