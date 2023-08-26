@@ -1,23 +1,35 @@
 package net.novauniverse.games.survivalgames
 
+import net.novauniverse.games.survivalgames.commands.modifier.ModifierCommand
 import net.novauniverse.games.survivalgames.configuration.SurvivalGamesConfig
 import net.novauniverse.games.survivalgames.debug.DebugCommands
 import net.novauniverse.games.survivalgames.game.SurvivalGames
 import net.novauniverse.games.survivalgames.map.mapmodules.countdown.SurvivalGamesCountdownConfig
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocation.ExtendedSpawnLocationConfig
+import net.novauniverse.games.survivalgames.modifier.Modifier
+import net.novauniverse.games.survivalgames.modifier.ModifierGUI
+import net.novauniverse.games.survivalgames.modifier.modifiers.deathswap.DeathSwap
+import net.novauniverse.games.survivalgames.modifier.modifiers.famine.FamineModifier
+import net.novauniverse.games.survivalgames.modifier.modifiers.singleheart.SingleHeart
+import net.novauniverse.games.survivalgames.modifier.modifiers.tntmadness.TNTMadness
+import net.novauniverse.games.survivalgames.modifier.selector.ModifierSelectorItem
 import net.zeeraa.novacore.commons.log.Log
 import net.zeeraa.novacore.commons.utils.JSONFileUtils
 import net.zeeraa.novacore.spigot.NovaCore
 import net.zeeraa.novacore.spigot.abstraction.events.VersionIndependentPlayerAchievementAwardedEvent
+import net.zeeraa.novacore.spigot.command.CommandRegistry
 import net.zeeraa.novacore.spigot.gameengine.NovaCoreGameEngine
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameManager
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.PreGameStartEvent
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.MapModuleManager
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.mapselector.selectors.RandomMapSelector
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.mapselector.selectors.guivoteselector.GUIMapVote
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.GameLobby
+import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.events.PlayerJoinGameLobbyEvent
 import net.zeeraa.novacore.spigot.language.LanguageReader
 import net.zeeraa.novacore.spigot.module.ModuleManager
 import net.zeeraa.novacore.spigot.module.modules.compass.event.CompassTrackingEvent
+import net.zeeraa.novacore.spigot.module.modules.customitems.CustomItemManager
 import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedBukkitMaterial
 import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedMaterial
 import org.apache.commons.io.FileUtils
@@ -91,6 +103,8 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
             return
         }
 
+        ModuleManager.require(CustomItemManager::class.java)
+
         ModuleManager.enable(GameManager::class.java)
         if (!survivalGamesConfig!!.dontUseGameLobby) {
             ModuleManager.enable(GameLobby::class.java)
@@ -98,6 +112,15 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
 
         MapModuleManager.addMapModule("novauniverse.survivalgames.extendedspawnlocation.config", ExtendedSpawnLocationConfig::class.java)
         MapModuleManager.addMapModule("novauniverse.survivalgames.countdown.config", SurvivalGamesCountdownConfig::class.java)
+
+        try {
+            CustomItemManager.getInstance().addCustomItem(ModifierSelectorItem::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.error("SurvivalGames", "Failed to load custom items. $e.javaClass.name $e.message}")
+        }
+
+        CommandRegistry.registerCommand(ModifierCommand(this))
 
         game = SurvivalGames(this)
 
@@ -119,6 +142,11 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
 
         Log.info(name, "Scheduled loading maps from " + mapFolder.path)
         GameManager.getInstance().readMapsFromFolderDelayed(mapFolder, worldFolder)
+
+        game!!.loadModifier(TNTMadness::class.java)
+        game!!.loadModifier(SingleHeart::class.java)
+        game!!.loadModifier(FamineModifier::class.java)
+        game!!.loadModifier(DeathSwap::class.java)
 
         DebugCommands()
     }
@@ -144,6 +172,23 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     fun onTheLongBoi(e: VersionIndependentPlayerAchievementAwardedEvent) {
         e.isCancelled = true
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    fun onPreGameStartEvent(e: PreGameStartEvent) {
+        ModifierGUI.SelectedModifiers.stream().forEach(Modifier::enable)
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    fun onPlayerJoinGameLobby(e: PlayerJoinGameLobbyEvent) {
+        if (e.player.hasPermission("survivalgames.modifier.select")) {
+            if (GameManager.getInstance().hasGame()) {
+                if (!GameManager.getInstance().activeGame.hasStarted()) {
+                    Log.debug("SurvivalGames", "Giving modifier selector to ${e.player.name}")
+                    e.player.inventory.setItem(1, CustomItemManager.getInstance().getCustomItemStack(ModifierSelectorItem::class.java, e.player))
+                }
+            }
+        }
     }
 
     companion object {

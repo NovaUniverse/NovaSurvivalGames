@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>NovaSurvivalGames</artifactId>
 	<version>2.0.0-SNAPSHOT</version>
@@ -14,15 +14,15 @@
 	</properties>
 
 	<distributionManagement>
-        <snapshotRepository>
-            <id>novauniverse2-snapshot</id>
-            <url>https://nexus2.novauniverse.net/repository/novauniverse/</url>
-        </snapshotRepository>
-        <repository>
-            <id>novauniverse2</id>
-            <url>https://nexus2.novauniverse.net/repository/novauniverse/</url>
-        </repository>
-    </distributionManagement>
+		<snapshotRepository>
+			<id>novauniverse2-snapshot</id>
+			<url>https://nexus2.novauniverse.net/repository/novauniverse/</url>
+		</snapshotRepository>
+		<repository>
+			<id>novauniverse2</id>
+			<url>https://nexus2.novauniverse.net/repository/novauniverse/</url>
+		</repository>
+	</distributionManagement>
 
 	<build>
 		<resources>
@@ -180,9 +180,9 @@
 
 	<repositories>
 		<repository>
-            <id>novauniverse2</id>
-            <url>https://nexus2.novauniverse.net/repository/novauniverse-group/</url>
-        </repository>
+			<id>novauniverse2</id>
+			<url>https://nexus2.novauniverse.net/repository/novauniverse-group/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -223,7 +223,7 @@
 			<version>20230227</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.bstats</groupId>
 			<artifactId>bstats-bukkit</artifactId>

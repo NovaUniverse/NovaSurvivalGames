@@ -7,3 +7,8 @@ depend: [NovaCore, NovaCoreGameEngine]
 softdepend: [NovaGamesTarget]
 
 authors: [Zeeraa, NovaUniverse]
+
+permissions:
+  survivalgames.modifier.select:
+    description: Allow user to select modifier
+    default: op
