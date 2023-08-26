@@ -9,6 +9,7 @@ import net.novauniverse.games.survivalgames.modifier.Modifier
 import net.novauniverse.games.survivalgames.modifier.ModifierGUI
 import net.novauniverse.games.survivalgames.modifier.modifiers.SingleHeart
 import net.novauniverse.games.survivalgames.modifier.modifiers.TNTMadness
+import net.novauniverse.games.survivalgames.modifier.selector.ModifierSelectorItem
 import net.zeeraa.novacore.commons.log.Log
 import net.zeeraa.novacore.commons.utils.JSONFileUtils
 import net.zeeraa.novacore.spigot.NovaCore
@@ -20,9 +21,11 @@ import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodule.M
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.mapselector.selectors.RandomMapSelector
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.mapselector.selectors.guivoteselector.GUIMapVote
 import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.GameLobby
+import net.zeeraa.novacore.spigot.gameengine.module.modules.gamelobby.events.PlayerJoinGameLobbyEvent
 import net.zeeraa.novacore.spigot.language.LanguageReader
 import net.zeeraa.novacore.spigot.module.ModuleManager
 import net.zeeraa.novacore.spigot.module.modules.compass.event.CompassTrackingEvent
+import net.zeeraa.novacore.spigot.module.modules.customitems.CustomItemManager
 import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedBukkitMaterial
 import net.zeeraa.novacore.spigot.utils.materialwrapper.WrappedMaterial
 import org.apache.commons.io.FileUtils
@@ -96,6 +99,8 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
             return
         }
 
+        ModuleManager.require(CustomItemManager::class.java)
+
         ModuleManager.enable(GameManager::class.java)
         if (!survivalGamesConfig!!.dontUseGameLobby) {
             ModuleManager.enable(GameLobby::class.java)
@@ -103,6 +108,13 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
 
         MapModuleManager.addMapModule("novauniverse.survivalgames.extendedspawnlocation.config", ExtendedSpawnLocationConfig::class.java)
         MapModuleManager.addMapModule("novauniverse.survivalgames.countdown.config", SurvivalGamesCountdownConfig::class.java)
+
+        try {
+            CustomItemManager.getInstance().addCustomItem(ModifierSelectorItem::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.error("SurvivalGames", "Failed to load custom items. $e.javaClass.name $e.message}")
+        }
 
         game = SurvivalGames(this)
 
@@ -158,6 +170,21 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     fun onPreGameStartEvent(e: PreGameStartEvent) {
         ModifierGUI.SelectedModifiers.stream().forEach(Modifier::enable)
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    fun onPlayerJoinGameLobby(e: PlayerJoinGameLobbyEvent) {
+        Log.trace("Player in lobby")
+        if (e.player.hasPermission("survivalgames.modifier.select")) {
+            Log.trace("Has permission")
+            if (GameManager.getInstance().hasGame()) {
+                Log.trace("Game loaded")
+                if (!GameManager.getInstance().activeGame.hasStarted()) {
+                    Log.debug("SurvivalGames", "Giving modifier selector to ${e.player.name}")
+                    e.player.inventory.setItem(1, CustomItemManager.getInstance().getCustomItemStack(ModifierSelectorItem::class.java, e.player))
+                }
+            }
+        }
     }
 
     companion object {
