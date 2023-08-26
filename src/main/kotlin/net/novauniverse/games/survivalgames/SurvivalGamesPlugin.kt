@@ -8,8 +8,10 @@ import net.novauniverse.games.survivalgames.map.mapmodules.countdown.SurvivalGam
 import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocation.ExtendedSpawnLocationConfig
 import net.novauniverse.games.survivalgames.modifier.Modifier
 import net.novauniverse.games.survivalgames.modifier.ModifierGUI
-import net.novauniverse.games.survivalgames.modifier.modifiers.SingleHeart
-import net.novauniverse.games.survivalgames.modifier.modifiers.TNTMadness
+import net.novauniverse.games.survivalgames.modifier.modifiers.deathswap.DeathSwap
+import net.novauniverse.games.survivalgames.modifier.modifiers.famine.FamineModifier
+import net.novauniverse.games.survivalgames.modifier.modifiers.singleheart.SingleHeart
+import net.novauniverse.games.survivalgames.modifier.modifiers.tntmadness.TNTMadness
 import net.novauniverse.games.survivalgames.modifier.selector.ModifierSelectorItem
 import net.zeeraa.novacore.commons.log.Log
 import net.zeeraa.novacore.commons.utils.JSONFileUtils
@@ -143,7 +145,8 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
 
         game!!.loadModifier(TNTMadness::class.java)
         game!!.loadModifier(SingleHeart::class.java)
-
+        game!!.loadModifier(FamineModifier::class.java)
+        game!!.loadModifier(DeathSwap::class.java)
 
         DebugCommands()
     }

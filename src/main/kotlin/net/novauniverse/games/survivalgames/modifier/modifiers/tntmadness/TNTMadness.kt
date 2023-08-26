@@ -1,4 +1,4 @@
-package net.novauniverse.games.survivalgames.modifier.modifiers
+package net.novauniverse.games.survivalgames.modifier.modifiers.tntmadness
 
 import net.novauniverse.games.survivalgames.modifier.Modifier
 import net.zeeraa.novacore.spigot.abstraction.VersionIndependentUtils
