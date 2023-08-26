@@ -1,11 +1,14 @@
 package net.novauniverse.games.survivalgames.modifier
 
 import net.novauniverse.games.survivalgames.SurvivalGamesPlugin
+import net.zeeraa.novacore.spigot.abstraction.enums.ColoredBlockType
 import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound
 import net.zeeraa.novacore.spigot.module.modules.gui.GUIAction
 import net.zeeraa.novacore.spigot.module.modules.gui.holders.GUIReadOnlyHolder
+import net.zeeraa.novacore.spigot.utils.ItemBuilder
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.DyeColor
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
@@ -23,6 +26,12 @@ class ModifierGUI {
 
             val index = AtomicInteger(0)
 
+            val background = ItemBuilder(ColoredBlockType.GLASS_PANE, DyeColor.WHITE)
+            background.setName(" ");
+            for(i in 0..inventory.size) {
+                inventory.setItem(i, background.build())
+            }
+
             SurvivalGamesPlugin.getInstance().game?.modifiers?.forEach { modifier ->
                 val builder = modifier.getIconAsItemBuilder()
 
@@ -31,23 +40,23 @@ class ModifierGUI {
                     builder.addEnchant(Enchantment.DURABILITY, 1)
                     builder.addEmptyLoreLine()
                     builder.addLore("${ChatColor.GREEN}Active")
-
-                    inventory.setItem(index.get(), builder.build())
-                    holder.addClickCallback(index.get()) { _, _, _, _, _, _ ->
-                        if (SelectedModifiers.contains(modifier)) {
-                            SelectedModifiers.remove(modifier)
-                            Bukkit.broadcast("${ChatColor.RED}$player.name disabled modifier ${modifier.getDisplayName()}",  "survivalgames.modifier.select")
-                        } else {
-                            SelectedModifiers.add(modifier)
-                            Bukkit.broadcast("${ChatColor.GREEN}$player.name enabled modifier ${modifier.getDisplayName()}",  "survivalgames.modifier.select")
-                        }
-                        VersionIndependentSound.NOTE_PLING.play(player)
-                        openModifierGUI(player)
-                        return@addClickCallback GUIAction.CANCEL_INTERACTION
-                    }
-
-                    index.addAndGet(1)
                 }
+
+                inventory.setItem(index.get(), builder.build())
+                holder.addClickCallback(index.get()) { _, _, _, _, _, _ ->
+                    if (SelectedModifiers.contains(modifier)) {
+                        SelectedModifiers.remove(modifier)
+                        Bukkit.broadcast("${ChatColor.RED}$player.name disabled modifier ${modifier.getDisplayName()}",  "survivalgames.modifier.select")
+                    } else {
+                        SelectedModifiers.add(modifier)
+                        Bukkit.broadcast("${ChatColor.GREEN}$player.name enabled modifier ${modifier.getDisplayName()}",  "survivalgames.modifier.select")
+                    }
+                    VersionIndependentSound.NOTE_PLING.play(player)
+                    openModifierGUI(player)
+                    return@addClickCallback GUIAction.CANCEL_INTERACTION
+                }
+
+                index.addAndGet(1)
             }
 
             player.openInventory(inventory)
