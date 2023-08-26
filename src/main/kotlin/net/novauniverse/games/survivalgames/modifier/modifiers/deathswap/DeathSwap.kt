@@ -1,6 +1,5 @@
 package net.novauniverse.games.survivalgames.modifier.modifiers.deathswap
 
-import net.novauniverse.games.survivalgames.SurvivalGamesPlugin
 import net.novauniverse.games.survivalgames.modifier.Modifier
 import net.novauniverse.games.survivalgames.modifier.modifiers.deathswap.provider.DeathSwapProvider
 import net.novauniverse.games.survivalgames.modifier.modifiers.deathswap.provider.providers.DefaultSwapProvider
@@ -11,7 +10,6 @@ import net.zeeraa.novacore.spigot.tasks.SimpleTask
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
-import org.bukkit.entity.Player
 
 class DeathSwap : Modifier("DeathSwap") {
     private var timeLeft = 0;
@@ -34,7 +32,7 @@ class DeathSwap : Modifier("DeathSwap") {
         task = SimpleTask({
             if(timeLeft == SWAP_WARNING) {
                 VersionIndependentSound.NOTE_PLING.broadcast()
-                Bukkit.getServer().broadcastMessage("${ChatColor.RED.toString() + ChatColor.BOLD.toString()}Swapping in $timeLeft seconds")
+                Bukkit.getServer().broadcastMessage("${ChatColor.RED.toString() + ChatColor.BOLD.toString()}Death Swap> Swapping in $timeLeft seconds")
             }
 
             if (timeLeft <= 0) {
