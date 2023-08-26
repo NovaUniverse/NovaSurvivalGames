@@ -1,6 +1,5 @@
 package net.novauniverse.games.survivalgames.game
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import net.novauniverse.games.survivalgames.SurvivalGamesPlugin
 import net.novauniverse.games.survivalgames.SurvivalGamesPlugin.Companion.getInstance
 import net.novauniverse.games.survivalgames.event.SurvivalgamesCountdownEvent
