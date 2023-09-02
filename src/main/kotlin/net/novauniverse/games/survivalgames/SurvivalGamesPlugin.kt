@@ -14,6 +14,7 @@ import net.novauniverse.games.survivalgames.modifier.modifiers.singleheart.Singl
 import net.novauniverse.games.survivalgames.modifier.modifiers.tntmadness.TNTMadness
 import net.novauniverse.games.survivalgames.modifier.selector.ModifierSelectorItem
 import net.zeeraa.novacore.commons.log.Log
+import net.zeeraa.novacore.commons.utils.DelayedRunner
 import net.zeeraa.novacore.commons.utils.JSONFileUtils
 import net.zeeraa.novacore.spigot.NovaCore
 import net.zeeraa.novacore.spigot.abstraction.events.VersionIndependentPlayerAchievementAwardedEvent
@@ -181,14 +182,16 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     fun onPlayerJoinGameLobby(e: PlayerJoinGameLobbyEvent) {
-        if (e.player.hasPermission("survivalgames.modifier.select")) {
-            if (GameManager.getInstance().hasGame()) {
-                if (!GameManager.getInstance().activeGame.hasStarted()) {
-                    Log.debug("SurvivalGames", "Giving modifier selector to ${e.player.name}")
-                    e.player.inventory.setItem(1, CustomItemManager.getInstance().getCustomItemStack(ModifierSelectorItem::class.java, e.player))
+        DelayedRunner.runDelayed({
+            if (e.player.hasPermission("survivalgames.modifier.select")) {
+                if (GameManager.getInstance().hasGame()) {
+                    if (!GameManager.getInstance().activeGame.hasStarted()) {
+                        Log.debug("SurvivalGames", "Giving modifier selector to ${e.player.name}")
+                        e.player.inventory.setItem(1, CustomItemManager.getInstance().getCustomItemStack(ModifierSelectorItem::class.java, e.player))
+                    }
                 }
             }
-        }
+        }, 20L);
     }
 
     companion object {
