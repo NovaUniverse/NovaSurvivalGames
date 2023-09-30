@@ -9,6 +9,7 @@ import net.novauniverse.games.survivalgames.map.mapmodules.extendedspawnlocation
 import net.novauniverse.games.survivalgames.modifier.Modifier
 import net.novauniverse.games.survivalgames.modifier.ModifierGUI
 import net.novauniverse.games.survivalgames.modifier.modifiers.deathswap.DeathSwap
+import net.novauniverse.games.survivalgames.modifier.modifiers.essentials.EssentialsModifier
 import net.novauniverse.games.survivalgames.modifier.modifiers.famine.FamineModifier
 import net.novauniverse.games.survivalgames.modifier.modifiers.singleheart.SingleHeart
 import net.novauniverse.games.survivalgames.modifier.modifiers.tntmadness.TNTMadness
@@ -148,6 +149,7 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
         game!!.loadModifier(SingleHeart::class.java)
         game!!.loadModifier(FamineModifier::class.java)
         game!!.loadModifier(DeathSwap::class.java)
+        game!!.loadModifier(EssentialsModifier::class.java)
 
         DebugCommands()
     }
