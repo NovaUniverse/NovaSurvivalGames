@@ -4,7 +4,7 @@ description: Novauniverse SurvivalGames
 version: 2.0.0
 api-version: 1.13
 depend: [NovaCore, NovaCoreGameEngine]
-softdepend: [NovaGamesTarget]
+softdepend: [NovaGamesTarget, NovaCoreGameEnginePlus]
 
 authors: [Zeeraa, NovaUniverse]
 

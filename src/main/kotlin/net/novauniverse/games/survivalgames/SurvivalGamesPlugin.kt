@@ -11,6 +11,7 @@ import net.novauniverse.games.survivalgames.modifier.ModifierGUI
 import net.novauniverse.games.survivalgames.modifier.modifiers.deathswap.DeathSwap
 import net.novauniverse.games.survivalgames.modifier.modifiers.essentials.EssentialsModifier
 import net.novauniverse.games.survivalgames.modifier.modifiers.famine.FamineModifier
+import net.novauniverse.games.survivalgames.modifier.modifiers.reviveready.ReviveReady
 import net.novauniverse.games.survivalgames.modifier.modifiers.singleheart.SingleHeart
 import net.novauniverse.games.survivalgames.modifier.modifiers.tntmadness.TNTMadness
 import net.novauniverse.games.survivalgames.modifier.selector.ModifierSelectorItem
@@ -150,6 +151,14 @@ class SurvivalGamesPlugin : JavaPlugin(), Listener {
         game!!.loadModifier(FamineModifier::class.java)
         game!!.loadModifier(DeathSwap::class.java)
         game!!.loadModifier(EssentialsModifier::class.java)
+
+        // Modifiers that requires GameEnginePlus addon
+        if(Bukkit.getServer().pluginManager.getPlugin("NovaCoreGameEnginePlus") != null) {
+            Log.info("SurvivalGames", "NovaCoreGameEnginePlus detected. Adding some extra modifiers that depends on it")
+            game!!.loadModifier(ReviveReady::class.java)
+        } else {
+            Log.info("SurvivalGames", "Some modifiers could not be enabled since they depend on NovaCoreGameEnginePlus that was not detected on this server")
+        }
 
         DebugCommands()
     }
