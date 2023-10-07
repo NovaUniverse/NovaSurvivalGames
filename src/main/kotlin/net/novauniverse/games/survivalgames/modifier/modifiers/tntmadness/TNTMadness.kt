@@ -18,7 +18,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.entity.EntityChangeBlockEvent
 import org.bukkit.util.Vector
 
-class TNTMadness : Modifier("TNTMadness") {
+class TNTMadness : Modifier("SurvivalGames.TNTMadness") {
     var task: SimpleTask? = null;
 
     val fallingBlocks = ArrayList<FallingBlock>()

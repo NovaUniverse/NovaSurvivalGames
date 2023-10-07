@@ -10,7 +10,7 @@ import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 
-class FamineModifier : Modifier("Famine") {
+class FamineModifier : Modifier("SurvivalGames.Famine") {
     override fun getDisplayName(): String {
         return "Famine"
     }

@@ -11,7 +11,7 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
 
-class DeathSwap : Modifier("DeathSwap") {
+class DeathSwap : Modifier("SurvivalGames.DeathSwap") {
     private var timeLeft = 0;
     private var task: Task? = null;
 

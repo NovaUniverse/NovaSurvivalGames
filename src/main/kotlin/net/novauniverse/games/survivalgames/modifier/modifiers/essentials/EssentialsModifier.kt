@@ -14,7 +14,7 @@ import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 
-class EssentialsModifier : Modifier("Essentials") {
+class EssentialsModifier : Modifier("SurvivalGames.Essentials") {
     override fun getDisplayName(): String {
         return "Essentials"
     }

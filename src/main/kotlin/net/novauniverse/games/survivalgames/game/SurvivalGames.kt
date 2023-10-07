@@ -257,11 +257,11 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
 
         getWorld().setGameRuleValue("announceAdvancements", "false")
 
-        modifiers.stream().filter (Modifier::enabled).forEach(Modifier::onGameStart)
+        modifiers.stream().filter(Modifier::enabled).forEach(Modifier::onGameStart)
 
         val modifierCount = modifiers.stream().filter(Modifier::enabled).count().toInt()
-        if(modifierCount > 0) {
-            if(modifierCount == 1) {
+        if (modifierCount > 0) {
+            if (modifierCount == 1) {
                 val singleMod = modifiers.stream().filter(Modifier::enabled).findFirst().get()
                 VersionIndependentUtils.get().broadcastTitle("${ChatColor.GOLD}Active Modifier", ChatColor.AQUA.toString() + singleMod.getDisplayName(), 0, 60, 20)
             } else {
@@ -300,11 +300,11 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
             }
         }
 
-        modifiers.stream().filter (Modifier::enabled).forEach(Modifier::onGameEnd)
+        modifiers.stream().filter(Modifier::enabled).forEach(Modifier::onGameEnd)
     }
 
     fun loadModifier(c: Class<out Modifier?>): Boolean {
-        if(modifiers.stream().anyMatch { it.javaClass.name.equals(c.javaClass.name, true) }) {
+        if (modifiers.stream().anyMatch { it.javaClass.name.equals(c.javaClass.name, true) }) {
             return false
         }
 

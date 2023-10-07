@@ -9,7 +9,7 @@ import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 
-class SingleHeart : Modifier("SingleHeart") {
+class SingleHeart : Modifier("SurvivalGames.SingleHeart") {
     override fun getDisplayName(): String {
         return "Single Heart"
     }
