@@ -13,6 +13,7 @@ import net.zeeraa.novacore.spigot.abstraction.enums.VersionIndependentSound
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.GameEndReason
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.MapGame
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.elimination.PlayerQuitEliminationAction
+import net.zeeraa.novacore.spigot.gameengine.module.modules.game.events.GameBeginEvent
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.map.mapmodules.graceperiod.graceperiod.event.GracePeriodBeginEvent
 import net.zeeraa.novacore.spigot.gameengine.module.modules.game.triggers.DelayedGameTrigger
 import net.zeeraa.novacore.spigot.language.LanguageManager
@@ -49,6 +50,8 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
     private val usedStartLocation: HashMap<UUID, Location> = HashMap()
     private val teamSpawnLocation: HashMap<Team, Location> = HashMap()
     private val temporaryCageBlocks: HashMap<Location, Material> = HashMap()
+
+    private var modifierBeginCalled: Boolean = false
 
     val modifiers: ArrayList<Modifier> = ArrayList()
 
@@ -473,6 +476,17 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
             Log.trace(name, "Calling tpToSpectator(" + player.name + ")")
             tpToSpectator(player)
         }, 5L)
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    fun onGameBegin(e: GameBeginEvent) {
+        if(modifierBeginCalled) {
+            return
+        }
+
+        modifierBeginCalled = true
+
+        modifiers.stream().filter(Modifier::enabled).forEach(Modifier::onGameBegin)
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

@@ -66,6 +66,12 @@ abstract class Modifier(val name: String) : Listener {
     open fun onGameStart() {}
 
     /**
+     * Called if the modifier is enabled when the GameBeginEvent is sent
+     */
+    open fun onGameBegin() {}
+
+
+    /**
      * Called if the modifier is enabled in the game end function
      */
     open fun onGameEnd() {}
