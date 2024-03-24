@@ -273,7 +273,7 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
 
             modifiers.stream().filter(Modifier::enabled).forEach {
                 Bukkit.getServer().broadcastMessage("${ChatColor.GOLD.toString() + ChatColor.BOLD.toString()}Active modifier: ${ChatColor.AQUA.toString() + ChatColor.BOLD.toString() + it.getDisplayName()}")
-                Bukkit.getServer().broadcastMessage(ChatColor.WHITE.toString() + it.getShortDescription())
+                Bukkit.getServer().broadcastMessage(ChatColor.LIGHT_PURPLE.toString() + it.getShortDescription())
             }
         }
     }
