@@ -33,4 +33,7 @@ class SurvivalGamesConfig(configFile: FileConfiguration) {
 
     @get:JvmName("isShuffleSpawnLocations")
     var shuffleSpawnLocations = configFile.getBoolean("ShuffleSpawnLocations")
+
+    @get:JvmName("isDisableTitleCountdown")
+    var disableTitleCountdown = configFile.getBoolean("DisableTitleCountdown")
 }

@@ -19,6 +19,7 @@ DisableDefaultEndSound: false
 
 DisableBuiltInCountdownSound: false
 DisableActionBar: false
-DisableChatCountdown: false
+DisableChatCountdown: true
+DisableTitleCountdown: false
 
 ShuffleSpawnLocations: false

@@ -334,7 +334,7 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
             if (!plugin.survivalGamesConfig!!.disableChatCountdown) {
                 player.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", countdownTime))
             }
-            VersionIndependentUtils.get().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", countdownTime), 10, 20, 10)
+            VersionIndependentUtils.get().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", countdownTime), 0, 20, 10)
         }
 
         val startTimer = BasicTimer(countdownTime.toLong(), 20L)
@@ -358,16 +358,17 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
                 if (!plugin.survivalGamesConfig!!.disableBuiltInCountdownSound) {
                     VersionIndependentUtils.get().playSound(player, player!!.location, VersionIndependentSound.NOTE_PLING, 1f, 1.3f)
                 }
-                if (plugin.survivalGamesConfig!!.disableActionBar) {
-                    if (timeLeft > 0) {
-                        VersionIndependentUtils.getInstance().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", timeLeft), 0, 20, 5)
-                    }
-                } else {
+                if (!plugin.survivalGamesConfig!!.disableActionBar) {
                     VersionIndependentUtils.get().sendActionBarMessage(player, LanguageManager.getString(player, "survivalgames.game.starting_in", timeLeft))
                 }
                 if (!plugin.survivalGamesConfig!!.disableChatCountdown) {
                     if (timeLeft > 0) {
                         player!!.sendMessage(LanguageManager.getString(player, "survivalgames.game.starting_in", timeLeft))
+                    }
+                }
+                if (!plugin.survivalGamesConfig!!.disableTitleCountdown) {
+                    if (timeLeft > 0) {
+                        VersionIndependentUtils.getInstance().sendTitle(player, "", LanguageManager.getString(player, "survivalgames.game.starting_in_title", timeLeft), 0, 20, 5)
                     }
                 }
             }
@@ -479,7 +480,7 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
 
     @EventHandler(priority = EventPriority.NORMAL)
     fun onGameBegin(e: GameBeginEvent) {
-        if(modifierBeginCalled) {
+        if (modifierBeginCalled) {
             return
         }
 
@@ -490,7 +491,7 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onEntityDamage(e: EntityDamageEvent) {
-        if(ended) {
+        if (ended) {
             e.isCancelled = true
             return
         }
