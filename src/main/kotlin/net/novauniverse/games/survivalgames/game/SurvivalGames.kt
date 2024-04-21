@@ -297,7 +297,6 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
             player.foodLevel = 20
             PlayerUtils.clearPlayerInventory(player)
             PlayerUtils.resetPlayerXP(player)
-            player.gameMode = GameMode.SPECTATOR
             if (!plugin.survivalGamesConfig!!.disableDefaultEndSound) {
                 VersionIndependentUtils.get().playSound(player, player.location, VersionIndependentSound.WITHER_DEATH, 1F, 1F)
             }
@@ -491,6 +490,11 @@ class SurvivalGames(@SuppressWarnings("WeakerAccess") val plugin: SurvivalGamesP
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     fun onEntityDamage(e: EntityDamageEvent) {
+        if(ended) {
+            e.isCancelled = true
+            return
+        }
+
         if (e.entity is Player) {
             if (!allowDamage) {
                 e.isCancelled = true
